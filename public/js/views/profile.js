@@ -2,7 +2,7 @@ import { state, saveProfile, saveTargets, refreshState, latestMeasure } from '..
 import { ACTIVITY_LEVELS, GOALS } from '../config.js';
 import { statHTML, confirmSheet } from '../ui.js';
 import { logout } from '../auth.js';
-import { esc, fmt, num, bmr, tdee, age, suggestTargets, toast } from '../utils.js';
+import { esc, fmt, num, bmr, tdee, age, suggestTargets, macroKcal, toast } from '../utils.js';
 import { render } from '../router.js';
 
 function formHTML(p) {
@@ -60,11 +60,12 @@ export async function renderProfile(view) {
 
     <h2 class="sectiontitle">Dati personali</h2>
     <div class="grid grid--stats">
-      ${statHTML({ label: 'Età', value: fmt(age(p.birthDate)), unit: 'anni' })}
-      ${statHTML({ label: 'Metabolismo basale', value: fmt(bmr(p)), unit: 'kcal', hint: 'Mifflin-St Jeor' })}
-      ${statHTML({ label: 'Fabbisogno (TDEE)', value: fmt(tdee(p)), unit: 'kcal', hint: 'Basale × attività' })}
+      ${statHTML({ label: 'Età', value: fmt(age(p.birthDate)), unit: 'anni', tone: 'grape' })}
+      ${statHTML({ label: 'Metabolismo basale', value: fmt(bmr(p)), unit: 'kcal', hint: 'Mifflin-St Jeor', tone: 'protein' })}
+      ${statHTML({ label: 'Fabbisogno (TDEE)', value: fmt(tdee(p)), unit: 'kcal', hint: 'Basale × attività', tone: 'carbs' })}
       ${statHTML({
         label: 'Target consigliato',
+        tone: 'kcal',
         value: fmt(suggestTargets(p).kcal),
         unit: 'kcal',
         hint: GOALS.find((g) => g.id === p.goal)?.label || ''
@@ -78,10 +79,33 @@ export async function renderProfile(view) {
       </div>
       ${formHTML(p)}
       <p class="stat__hint" style="margin:0 0 14px">
-        Questi valori alimentano il calcolo del fabbisogno. Gli obiettivi giornalieri
-        si impostano nella sezione <a href="#/dieta">Dieta</a>.
+        Questi valori alimentano il calcolo del fabbisogno usato qui sotto.
       </p>
       <button class="btn" id="save-profile" type="button">Salva profilo</button>
+    </section>
+
+    <h2 class="sectiontitle">Obiettivi giornalieri</h2>
+    <section class="card">
+      <label class="switch">
+        <input type="checkbox" id="t-auto" ${state.targets.auto ? 'checked' : ''} />
+        <span>Calcola automaticamente dal profilo (Mifflin-St Jeor)</span>
+      </label>
+      <div class="formgrid">
+        <label class="field"><span>Calorie (kcal)</span>
+          <input id="t-kcal" type="number" inputmode="numeric" min="800" step="10"
+                 value="${num(state.targets.kcal)}" ${state.targets.auto ? 'disabled' : ''} /></label>
+        <label class="field"><span>Proteine (g)</span>
+          <input id="t-protein" type="number" inputmode="numeric" min="0" step="1"
+                 value="${num(state.targets.protein)}" ${state.targets.auto ? 'disabled' : ''} /></label>
+        <label class="field"><span>Carboidrati (g)</span>
+          <input id="t-carbs" type="number" inputmode="numeric" min="0" step="1"
+                 value="${num(state.targets.carbs)}" ${state.targets.auto ? 'disabled' : ''} /></label>
+        <label class="field"><span>Grassi (g)</span>
+          <input id="t-fat" type="number" inputmode="numeric" min="0" step="1"
+                 value="${num(state.targets.fat)}" ${state.targets.auto ? 'disabled' : ''} /></label>
+      </div>
+      <p class="stat__hint" id="t-check"></p>
+      <button class="btn" id="save-targets" type="button">Salva obiettivi</button>
     </section>`;
 
   const read = () => ({
@@ -111,6 +135,50 @@ export async function renderProfile(view) {
     if (!m?.weight) return toast('Nessuna pesata registrata nelle Misure', 'error');
     view.querySelector('#f-weight').value = m.weight;
     toast(`Peso aggiornato a ${fmt(m.weight, 1)} kg — ricorda di salvare`);
+  });
+
+  // ---- obiettivi giornalieri ----
+  const autoBox = view.querySelector('#t-auto');
+  const macroInputs = ['kcal', 'protein', 'carbs', 'fat'].map((k) => view.querySelector(`#t-${k}`));
+  const check = view.querySelector('#t-check');
+
+  const paintCheck = () => {
+    const daMacro = macroKcal({
+      protein: num(macroInputs[1].value),
+      carbs: num(macroInputs[2].value),
+      fat: num(macroInputs[3].value)
+    });
+    const delta = Math.round(daMacro - num(macroInputs[0].value));
+    check.textContent = `I macro impostati valgono ${fmt(daMacro)} kcal (${
+      delta === 0 ? 'coerente' : `${delta > 0 ? '+' : ''}${fmt(delta)} rispetto al target`
+    }).`;
+  };
+  macroInputs.forEach((i) => i.addEventListener('input', paintCheck));
+  paintCheck();
+
+  autoBox.addEventListener('change', () => {
+    const on = autoBox.checked;
+    macroInputs.forEach((i) => (i.disabled = on));
+    if (on) {
+      const s = suggestTargets(read());
+      [s.kcal, s.protein, s.carbs, s.fat].forEach((v, i) => (macroInputs[i].value = v));
+    }
+    paintCheck();
+  });
+
+  view.querySelector('#save-targets').addEventListener('click', async () => {
+    const t = {
+      auto: autoBox.checked,
+      kcal: num(macroInputs[0].value),
+      protein: num(macroInputs[1].value),
+      carbs: num(macroInputs[2].value),
+      fat: num(macroInputs[3].value)
+    };
+    if (t.kcal < 800) return toast('Target calorico troppo basso (minimo 800 kcal)', 'error');
+    await saveTargets(t);
+    await refreshState();
+    toast('Obiettivi salvati', 'ok');
+    render();
   });
 
   view.querySelector('#reload-btn').addEventListener('click', async () => {

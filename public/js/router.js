@@ -44,7 +44,7 @@ export async function render() {
 
   const view = $('#view');
   view.innerHTML = '<p class="loading">Caricamento…</p>';
-  window.scrollTo({ top: 0 });
+  view.scrollTop = 0; // è <main> a scorrere, non la pagina
 
   try {
     await def.render(view);

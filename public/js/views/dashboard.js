@@ -1,5 +1,7 @@
 import { state, listEntries, listEntriesRange, listMeasures } from '../store.js';
-import { ringHTML, macroBarsHTML, statHTML, alertHTML } from '../ui.js';
+import { ringHTML, macroBarsHTML, statHTML, alertHTML, PLUS_SVG } from '../ui.js';
+import { openFoodPicker } from './meals.js';
+import { slotForNow } from '../config.js';
 import { kcalHistoryChart, macroHistoryChart, macroSplitChart, trendChart } from '../charts.js';
 import {
   esc,
@@ -141,7 +143,7 @@ export async function renderDashboard(view) {
     d == null ? '' : `${d > 0 ? '+' : ''}${fmt(d, 1)} kg`;
   const deltaClass = (d) => (d == null || d === 0 ? '' : d > 0 ? 'stat__hint--up' : 'stat__hint--down');
 
-  view.innerHTML = `
+  view.innerHTML = `<div id="dash-root">
     <h2 class="sectiontitle">${esc(formatDateLong(date))}</h2>
     <div class="grid">
       <section class="card card--span2">${ringHTML(totals.kcal, targets.kcal)}</section>
@@ -155,18 +157,21 @@ export async function renderDashboard(view) {
     <div class="grid grid--stats">
       ${statHTML({
         label: 'Assunte oggi',
+        tone: 'kcal',
         value: fmt(totals.kcal),
         unit: 'kcal',
         hint: `${entries.length} alimenti registrati`
       })}
       ${statHTML({
         label: 'Media 7 giorni',
+        tone: 'carbs',
         value: fmt(avg7),
         unit: 'kcal',
         hint: avg7 ? `${fmt(avg7 - num(targets.kcal))} kcal vs target` : 'Nessun dato'
       })}
       ${statHTML({
         label: 'Peso attuale',
+        tone: 'protein',
         value: lastWeight ? fmt(lastWeight.weight, 1) : '—',
         unit: lastWeight ? 'kg' : '',
         hint: d7 != null ? `${deltaHint(d7)} in 7 giorni` : 'Serve una seconda pesata',
@@ -174,6 +179,7 @@ export async function renderDashboard(view) {
       })}
       ${statHTML({
         label: 'Variazione 30 gg',
+        tone: 'fat',
         value: d30 != null ? `${d30 > 0 ? '+' : ''}${fmt(d30, 1)}` : '—',
         unit: d30 != null ? 'kg' : '',
         hint: `Target: ${fmt(targets.kcal)} kcal/giorno`,
@@ -210,7 +216,13 @@ export async function renderDashboard(view) {
             : '<p class="empty">Servono almeno due pesate per il grafico.</p>'
         }</div>
       </section>
-    </div>`;
+    </div>
+
+    <button class="addbtn addbtn--fab" type="button" id="dash-add"
+            aria-label="Aggiungi un pasto">${PLUS_SVG}</button>
+  </div>`;
+
+  view.querySelector('#dash-add').addEventListener('click', () => openFoodPicker(slotForNow()));
 
   kcalHistoryChart('ch-kcal', days, daily.map((d) => round(d.kcal)), num(targets.kcal));
   macroHistoryChart('ch-macros', days, {

@@ -6,7 +6,7 @@
 // il codice cerca elementi che non esistono più. Meglio qualche ms in più.
 //
 // I dati Firestore hanno già la loro persistenza offline nell'SDK.
-const VERSION = 'v7';
+const VERSION = 'v8';
 const SHELL = `simple-diet-shell-${VERSION}`;
 
 // La cartella in cui vive il service worker: '/' su Firebase Hosting,
@@ -27,9 +27,11 @@ const SHELL_FILES = [
   './js/firebase-init.js',
   './js/foodsearch.js',
   './js/ideas.js',
+  './js/diets.js',
   './js/planimport.js',
   './js/data/foods-base.js',
   './js/data/recipe-ideas.js',
+  './js/data/monthly-diets.js',
   './js/off.js',
   './js/router.js',
   './js/store.js',

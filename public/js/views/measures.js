@@ -95,12 +95,14 @@ export async function renderMeasures(view) {
     <div class="grid grid--stats">
       ${statHTML({
         label: 'Peso attuale',
+        tone: 'protein',
         value: latest ? fmt(latest.weight, 1) : '—',
         unit: latest ? 'kg' : '',
         hint: latest ? formatDateLong(latest.date) : 'Nessuna pesata'
       })}
       ${statHTML({
         label: 'Ultimi 7 giorni',
+        tone: 'carbs',
         value: d7 != null ? `${d7 > 0 ? '+' : ''}${fmt(d7, 1)}` : '—',
         unit: d7 != null ? 'kg' : '',
         hint: deltaText(d7, '7 giorni'),
@@ -108,6 +110,7 @@ export async function renderMeasures(view) {
       })}
       ${statHTML({
         label: 'Ultimi 30 giorni',
+        tone: 'fat',
         value: d30 != null ? `${d30 > 0 ? '+' : ''}${fmt(d30, 1)}` : '—',
         unit: d30 != null ? 'kg' : '',
         hint: deltaText(d30, '30 giorni'),
@@ -115,6 +118,7 @@ export async function renderMeasures(view) {
       })}
       ${statHTML({
         label: 'BMI',
+        tone: 'grape',
         value: bmiValue != null ? fmt(bmiValue, 1) : '—',
         hint: waistHip != null ? `Vita/fianchi ${fmt(waistHip, 2)}` : bmiLabel(bmiValue)
       })}

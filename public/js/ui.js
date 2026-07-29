@@ -67,9 +67,10 @@ export function macroBarsHTML(totals, targets) {
   }).join('')}</div>`;
 }
 
-export function statHTML({ label, value, unit = '', hint = '', hintClass = '' }) {
+/** `tone`: kcal | protein | carbs | fat | ok — colora bordo e valore. */
+export function statHTML({ label, value, unit = '', hint = '', hintClass = '', tone = '' }) {
   return `
-    <div class="stat">
+    <div class="stat${tone ? ` stat--${tone}` : ''}">
       <span class="stat__label">${esc(label)}</span>
       <span class="stat__value">${value}${unit ? `<span class="stat__unit">${esc(unit)}</span>` : ''}</span>
       ${hint ? `<span class="stat__hint ${hintClass}">${hint}</span>` : ''}

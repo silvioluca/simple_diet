@@ -19,7 +19,7 @@ import {
 import { render } from '../router.js';
 
 // Stato del pannello Idee, conservato fra un render e l'altro.
-let panelOpen = 'mie'; // mie | idee
+let panelOpen = 'idee'; // idee | mie — le idee sono il punto di partenza naturale
 let ideaFilters = { text: '', ingredient: '', tag: '' };
 
 /** Riga ingrediente dentro l'editor. */
@@ -475,18 +475,19 @@ export async function renderRecipes(view) {
 
   view.innerHTML = `<div id="recipes-root">
     <div class="grid grid--stats">
-      ${statHTML({ label: 'Ricette tue', value: fmt(recipes.length) })}
-      ${statHTML({ label: 'Media per porzione', value: fmt(avg), unit: 'kcal' })}
+      ${statHTML({ label: 'Ricette tue', value: fmt(recipes.length), tone: 'grape' })}
+      ${statHTML({ label: 'Media per porzione', value: fmt(avg), unit: 'kcal', tone: 'kcal' })}
       ${statHTML({
         label: 'Idee pronte',
+        tone: 'protein',
         value: fmt(filterIdeas({}).length),
         hint: 'Cercabili per nome o ingrediente'
       })}
     </div>
 
     <div class="chips" style="margin:22px 0 14px" id="rec-tabs" role="tablist">
-      <button class="chip" type="button" data-panel="mie" aria-pressed="${panelOpen === 'mie'}">📒 Le mie ricette</button>
       <button class="chip" type="button" data-panel="idee" aria-pressed="${panelOpen === 'idee'}">💡 Idee</button>
+      <button class="chip" type="button" data-panel="mie" aria-pressed="${panelOpen === 'mie'}">📒 Le mie ricette</button>
     </div>
 
     <div id="rec-panel">${

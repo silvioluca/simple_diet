@@ -13,12 +13,35 @@ giorno per giorno, più ricette, piano alimentare settimanale e misure corporee.
 
 | Sezione | Contenuto |
 |---|---|
-| **Dashboard** | Anello calorie rimanenti, barre macro, stat card (assunte, media 7 gg, peso, variazione 30 gg), avvisi automatici, grafici kcal e macro a 14 giorni, ripartizione calorica del giorno, trend peso |
+| **Dashboard** | Anello calorie rimanenti, barre macro, stat card (assunte, media 7 gg, peso, variazione 30 gg), avvisi automatici, grafici kcal e macro a 14 giorni, ripartizione calorica del giorno, trend peso. Pulsante `+` per registrare subito un pasto |
 | **Pasti** | Diario per 6 slot (colazione → dopo cena). Pulsante `+` flottante che indovina il pasto dall'ora. Ricerca unificata, barcode, inserimento manuale, import del piano del giorno |
 | **Ricette** | Due pannelli. *Le mie ricette*: ingredienti + porzioni → kcal e macro per porzione, riutilizzabili nei suggerimenti. *Idee*: 51 ricette dietetiche pronte, filtrabili per ingrediente e per tipo, da aggiungere al diario regolando la grammatura |
-| **Dieta** | Obiettivi automatici (da TDEE) o manuali, piano settimanale per giorno, copia su altri giorni, import/export del piano |
+| **Dieta** | Tre diete mensili pronte (mediterranea, vegetariana, proteica) con foto, applicabili al piano; piano settimanale per giorno, copia su altri giorni, import/export |
 | **Misure** | Peso, massa grassa, petto, vita, fianchi, braccio, coscia, collo. BMI, rapporto vita/fianchi, delta 7 e 30 giorni, grafico per metrica, storico |
-| **Profilo** (topbar) | Dati personali (BMR Mifflin-St Jeor → TDEE), account Google, uscita |
+| **Profilo** (topbar) | Dati personali (BMR Mifflin-St Jeor → TDEE), obiettivi giornalieri automatici o manuali, account Google, uscita |
+
+## Diete mensili
+
+[monthly-diets.js](public/js/data/monthly-diets.js) definisce tre impostazioni alimentari.
+Ognuna è una **settimana tipo** che si ripete per il mese, con la ripartizione dei
+macronutrienti consigliata:
+
+| Dieta | Ripartizione | Media |
+|---|---|---|
+| Mediterranea | C 50% · P 20% · G 30% | ~1500 kcal/giorno |
+| Vegetariana | C 50% · P 20% · G 30% | ~1500 kcal/giorno |
+| Proteica | C 35% · P 35% · G 30% | ~1800 kcal/giorno |
+
+Come per le idee ricette, **gli alimenti citano i nomi della tabella e le macro non sono
+duplicate**: si calcolano da `foods-base.js`. Applicandone una si sostituisce il piano
+settimanale e, opzionalmente, si ricalcolano gli obiettivi mantenendo le *proprie* calorie:
+il piano è un modello, il fabbisogno resta personale.
+
+## Layout
+
+La pagina non scorre mai: scorre solo `<main>`. Serve a tenere ferma la barra di
+navigazione in basso — su Safari mobile un elemento `position: fixed` si sposta quando la
+barra degli strumenti del browser si comprime allo scroll.
 
 ## Ricerca alimenti
 

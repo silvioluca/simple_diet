@@ -3,6 +3,7 @@ import { GOALS, MEAL_SLOTS, WEEKDAYS } from '../config.js';
 import { statHTML, openSheet, confirmSheet, PLUS_SVG } from '../ui.js';
 import { openFoodPicker } from './meals.js';
 import { parsePlan, planSummary, templateCSV } from '../planimport.js';
+import { DIETS, findDiet, targetsFromDiet } from '../diets.js';
 import {
   esc,
   fmt,
@@ -150,24 +151,117 @@ lunedi,cena,Merluzzo (c),200"></textarea>
   });
 }
 
-function targetsFormHTML(t) {
-  const disabled = t.auto ? 'disabled' : '';
+function dietCardHTML(diet) {
+  const foto = diet.photo?.url
+    ? `<img class="cover__img" src="${esc(diet.photo.url)}" alt="" loading="lazy" decoding="async" />`
+    : '';
   return `
-    <label class="switch">
-      <input type="checkbox" id="t-auto" ${t.auto ? 'checked' : ''} />
-      <span>Calcola automaticamente dal profilo (Mifflin-St Jeor)</span>
-    </label>
-    <div class="formgrid">
-      <label class="field"><span>Calorie (kcal)</span>
-        <input id="t-kcal" type="number" inputmode="numeric" min="800" step="10" value="${num(t.kcal)}" ${disabled} /></label>
-      <label class="field"><span>Proteine (g)</span>
-        <input id="t-protein" type="number" inputmode="numeric" min="0" step="1" value="${num(t.protein)}" ${disabled} /></label>
-      <label class="field"><span>Carboidrati (g)</span>
-        <input id="t-carbs" type="number" inputmode="numeric" min="0" step="1" value="${num(t.carbs)}" ${disabled} /></label>
-      <label class="field"><span>Grassi (g)</span>
-        <input id="t-fat" type="number" inputmode="numeric" min="0" step="1" value="${num(t.fat)}" ${disabled} /></label>
-    </div>
-    <p class="stat__hint" id="t-check"></p>`;
+    <button class="dietcard" type="button" data-diet="${esc(diet.id)}">
+      <span class="cover cover--diet" style="background:${diet.cover}" aria-hidden="true">
+        <span class="cover__icon">${diet.icon}</span>${foto}
+      </span>
+      <span class="dietcard__body">
+        <span class="dietcard__name">${esc(diet.name)}</span>
+        <span class="dietcard__claim">${esc(diet.claim)}</span>
+        <span class="dietcard__macro">
+          <b>${fmt(diet.media.kcal)}</b> kcal/giorno ·
+          C ${diet.split.carbs}% · P ${diet.split.protein}% · G ${diet.split.fat}%
+        </span>
+      </span>
+    </button>`;
+}
+
+/** Scheda dieta: descrizione, settimana giorno per giorno, applicazione. */
+function dietSheet(diet, apply) {
+  openSheet({
+    size: 'lg',
+    html: `<div class="picker">
+      <header class="picker__head picker__head--cover">
+        <span class="cover cover--sm" style="background:${diet.cover}" aria-hidden="true">
+          <span class="cover__icon">${diet.icon}</span>
+          ${diet.photo?.url ? `<img class="cover__img" src="${esc(diet.photo.url)}" alt="" />` : ''}
+        </span>
+        <div><h2>Dieta ${esc(diet.name)}</h2>
+          <p class="picker__sub">${fmt(diet.media.kcal)} kcal al giorno · ${diet.conteggio} alimenti</p></div>
+        <button class="iconbtn" data-close type="button" aria-label="Chiudi">✕</button>
+      </header>
+
+      <div data-mode="dieta">
+        <p class="idea__steps">${esc(diet.description)}</p>
+
+        <div class="chips" style="margin:14px 0">
+          ${diet.highlights.map((h) => `<span class="chip chip--static">${esc(h)}</span>`).join('')}
+        </div>
+
+        <p class="picker__label">Media giornaliera</p>
+        <div class="preview">
+          <span class="preview__k">${fmt(diet.media.kcal)}<small> kcal</small></span>
+          <span class="preview__m">P ${fmt(diet.media.protein)} · C ${fmt(diet.media.carbs)} · G ${fmt(diet.media.fat)} g</span>
+        </div>
+
+        <p class="picker__label" style="margin-top:16px">La settimana</p>
+        <div class="tablewrap">
+          <table><thead><tr><th>Giorno</th><th>Alimenti</th><th>Calorie</th></tr></thead>
+            <tbody>${diet.perGiorno
+              .map(
+                (g) =>
+                  `<tr><td>${esc(g.day.label)}</td><td>${g.items.length}</td><td>${fmt(g.totals.kcal)} kcal</td></tr>`
+              )
+              .join('')}</tbody></table>
+        </div>
+
+        ${diet.perGiorno
+          .map(
+            (g) => `
+          <p class="picker__label" style="margin-top:16px">${esc(g.day.label)}</p>
+          <ul class="list list--compact">
+            ${MEAL_SLOTS.map((slot) => {
+              const own = g.items.filter((i) => i.slot === slot.id);
+              if (!own.length) return '';
+              return own
+                .map((i) => {
+                  const m = scaleMacros(i.per100, i.grams);
+                  return `<li class="food"><div class="food__row food__row--static">
+                    <span class="food__name">${slot.icon} ${esc(i.name)}</span>
+                    <span class="food__qty">${fmt(i.grams)} g</span>
+                    <span class="food__kcal">${fmt(m.kcal)}<small> kcal</small></span>
+                  </div></li>`;
+                })
+                .join('');
+            }).join('')}
+          </ul>`
+          )
+          .join('')}
+
+        ${diet.photo?.credit ? `<p class="idea__credit">Foto: ${esc(diet.photo.credit)}</p>` : ''}
+      </div>
+
+      <footer class="picker__foot">
+        <label class="switch" style="margin:0 auto 0 0">
+          <input type="checkbox" id="d-targets" checked />
+          <span>Imposta anche gli obiettivi</span>
+        </label>
+        <button class="btn btn--sm" id="d-apply" type="button" style="width:auto">Applica al piano</button>
+      </footer>
+    </div>`,
+
+    onMount: (panel, close) => {
+      panel.querySelector('#d-apply').addEventListener('click', async () => {
+        const anche = panel.querySelector('#d-targets').checked;
+        close();
+        const ok = await confirmSheet({
+          title: `Applicare la dieta ${diet.name}?`,
+          text:
+            `Il piano settimanale verrà sostituito con ${diet.conteggio} alimenti` +
+            (anche ? ' e gli obiettivi giornalieri verranno ricalcolati' : '') +
+            '. I pasti già registrati non vengono toccati.',
+          confirmLabel: 'Applica'
+        });
+        if (!ok) return;
+        await apply(diet, anche);
+      });
+    }
+  });
 }
 
 function planItemHTML(item, index) {
@@ -235,31 +329,28 @@ export async function renderDiet(view) {
   const suggested = suggestTargets(profile);
 
   view.innerHTML = `
-    <h2 class="sectiontitle">Obiettivi giornalieri</h2>
-    <div class="grid grid--stats">
-      ${statHTML({ label: 'Fabbisogno (TDEE)', value: fmt(tdee(profile)), unit: 'kcal', hint: 'Dal profilo' })}
+    <h2 class="sectiontitle">Diete mensili</h2>
+    <p class="sectionlead">Una settimana tipo che si ripete per il mese. Applicandola
+      sostituisci il piano settimanale qui sotto.</p>
+    <div class="dietgrid">${DIETS.map(dietCardHTML).join('')}</div>
+
+    <div class="grid grid--stats section">
+      ${statHTML({ label: 'Fabbisogno (TDEE)', value: fmt(tdee(profile)), unit: 'kcal', hint: 'Dal profilo', tone: 'carbs' })}
       ${statHTML({
         label: 'Consigliato',
         value: fmt(suggested.kcal),
         unit: 'kcal',
-        hint: GOALS.find((g) => g.id === profile.goal)?.label || ''
+        hint: GOALS.find((g) => g.id === profile.goal)?.label || '',
+        tone: 'protein'
       })}
-      ${statHTML({ label: 'Target attivo', value: fmt(targets.kcal), unit: 'kcal', hint: targets.auto ? 'Automatico' : 'Manuale' })}
+      ${statHTML({ label: 'Target attivo', value: fmt(targets.kcal), unit: 'kcal', hint: targets.auto ? 'Automatico' : 'Manuale', tone: 'kcal' })}
       ${statHTML({
         label: 'Split macro',
         value: `${fmt(targets.protein)}/${fmt(targets.carbs)}/${fmt(targets.fat)}`,
-        hint: 'Proteine / carbo / grassi (g)'
+        hint: 'Proteine / carbo / grassi (g)',
+        tone: 'fat'
       })}
     </div>
-
-    <section class="card section">
-      <div class="card__head">
-        <h2>Imposta obiettivi</h2>
-        <a class="btn btn--ghost btn--sm" href="#/profilo" style="width:auto">Modifica profilo</a>
-      </div>
-      ${targetsFormHTML(targets)}
-      <button class="btn" id="save-targets" type="button">Salva obiettivi</button>
-    </section>
 
     <div class="sectionbar">
       <h2 class="sectiontitle">Piano settimanale</h2>
@@ -271,50 +362,6 @@ export async function renderDiet(view) {
     <section class="card">
       <div id="plan">${planHTML(plan, targets)}</div>
     </section>`;
-
-  // ---- obiettivi ----
-  const autoBox = view.querySelector('#t-auto');
-  const macroInputs = ['kcal', 'protein', 'carbs', 'fat'].map((k) => view.querySelector(`#t-${k}`));
-  const check = view.querySelector('#t-check');
-
-  const paintCheck = () => {
-    const fromMacros = macroKcal({
-      protein: num(macroInputs[1].value),
-      carbs: num(macroInputs[2].value),
-      fat: num(macroInputs[3].value)
-    });
-    const delta = round(fromMacros - num(macroInputs[0].value));
-    check.textContent = `I macro impostati valgono ${fmt(fromMacros)} kcal (${
-      delta === 0 ? 'coerente' : `${delta > 0 ? '+' : ''}${fmt(delta)} rispetto al target`
-    }).`;
-  };
-  macroInputs.forEach((i) => i.addEventListener('input', paintCheck));
-  paintCheck();
-
-  autoBox.addEventListener('change', () => {
-    const on = autoBox.checked;
-    macroInputs.forEach((i) => (i.disabled = on));
-    if (on) {
-      const s = suggestTargets(state.profile);
-      [s.kcal, s.protein, s.carbs, s.fat].forEach((v, i) => (macroInputs[i].value = v));
-    }
-    paintCheck();
-  });
-
-  view.querySelector('#save-targets').addEventListener('click', async () => {
-    const t = {
-      auto: autoBox.checked,
-      kcal: num(macroInputs[0].value),
-      protein: num(macroInputs[1].value),
-      carbs: num(macroInputs[2].value),
-      fat: num(macroInputs[3].value)
-    };
-    if (t.kcal < 800) return toast('Target calorico troppo basso (minimo 800 kcal)', 'error');
-    await saveTargets(t);
-    await refreshState();
-    toast('Obiettivi salvati', 'ok');
-    render();
-  });
 
   // ---- piano settimanale ----
   const planBox = view.querySelector('#plan');
@@ -356,6 +403,27 @@ export async function renderDiet(view) {
     }
 
     if (e.target.closest('[data-copy-day]')) return copyDaySheet();
+  });
+
+  // ---- diete mensili ----
+  view.querySelector('.dietgrid').addEventListener('click', (e) => {
+    const card = e.target.closest('[data-diet]');
+    if (!card) return;
+    const diet = findDiet(card.dataset.diet);
+    if (!diet) return;
+
+    dietSheet(diet, async (d, ancheTarget) => {
+      await persistPlan(d.plan);
+      if (ancheTarget) {
+        // I target seguono la ripartizione della dieta, ma sulle calorie
+        // dell'utente: il piano è un modello, il fabbisogno è personale.
+        const kcal = num(state.targets.kcal) || d.media.kcal;
+        await saveTargets(targetsFromDiet(d, kcal));
+        await refreshState();
+      }
+      toast(`Dieta ${d.name} applicata`, 'ok');
+      render();
+    });
   });
 
   view.querySelector('#plan-import').addEventListener('click', () => importSheet(persistPlan));

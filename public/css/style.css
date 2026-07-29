@@ -11,12 +11,14 @@
   --text: #141922;
   --text-dim: #5c6673;
   --text-faint: #8b95a3;
-  --accent: #2f7d55;
-  --accent-soft: #e3f2e9;
-  --kcal: #f0932b;
-  --protein: #2f7d55;
-  --carbs: #3a7bd5;
-  --fat: #c0563c;
+  --accent: #1f9d5c;
+  --accent-soft: #dcf5e7;
+  --kcal: #f2860f;
+  --protein: #1f9d5c;
+  --carbs: #2f7fe4;
+  --fat: #e05c3e;
+  --grape: #7b5cd6;
+  --grape-soft: #ece7fb;
   --danger: #c23b3b;
   --warn: #b8860b;
   --ok: #2f7d55;
@@ -40,12 +42,14 @@
     --text: #e8ecf2;
     --text-dim: #a3adbb;
     --text-faint: #6e7887;
-    --accent: #4bbd80;
-    --accent-soft: #16301f;
-    --kcal: #f5a94a;
-    --protein: #4bbd80;
-    --carbs: #5b9bf0;
-    --fat: #e07a5f;
+    --accent: #45c98a;
+    --accent-soft: #133527;
+    --kcal: #ffab45;
+    --protein: #45c98a;
+    --carbs: #5fa5ff;
+    --fat: #ff8462;
+    --grape: #9c86f0;
+    --grape-soft: #241d3d;
     --danger: #e26060;
     --warn: #d9a441;
     --ok: #4bbd80;
@@ -57,11 +61,15 @@
   box-sizing: border-box;
 }
 
+/* La pagina non scorre mai: scorre solo <main>. Serve a tenere ferma la barra
+   di navigazione in basso — su Safari mobile un elemento position:fixed si
+   sposta quando la barra degli strumenti del browser si comprime allo scroll. */
 html,
 body {
   margin: 0;
   height: 100%;
-  overscroll-behavior-y: none;
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 body {
@@ -229,7 +237,8 @@ textarea {
 .app {
   display: grid;
   grid-template-rows: auto 1fr auto;
-  min-height: 100dvh;
+  height: 100dvh;
+  overflow: hidden;
 }
 
 /* Senza questo i figli della griglia hanno min-width:auto, cioè il min-content
@@ -240,8 +249,6 @@ textarea {
 }
 
 .topbar {
-  position: sticky;
-  top: 0;
   z-index: 20;
   display: grid;
   grid-template-columns: 1fr auto;
@@ -359,13 +366,31 @@ textarea {
 
 /* Titolo che separa i gruppi dentro una view. */
 .sectiontitle {
+  display: flex;
+  gap: 9px;
+  align-items: center;
   margin: 26px 0 12px;
-  padding-left: 2px;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--text-faint);
+  color: var(--text-dim);
+}
+
+/* Trattino colorato davanti al titolo. */
+.sectiontitle::before {
+  flex: none;
+  width: 14px;
+  height: 3px;
+  content: '';
+  background: linear-gradient(90deg, var(--accent), var(--carbs));
+  border-radius: 99px;
+}
+
+.sectionlead {
+  margin: -4px 0 14px;
+  font-size: 14px;
+  color: var(--text-dim);
 }
 
 .view > .sectiontitle:first-child,
@@ -391,28 +416,27 @@ textarea {
   margin-top: 0;
 }
 
+/* L'unico elemento che scorre. */
 .view {
-  padding: 18px calc(var(--safe-r) + 16px) calc(var(--nav-h) + var(--safe-b) + 28px)
-    calc(var(--safe-l) + 16px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 18px calc(var(--safe-r) + 16px) 28px calc(var(--safe-l) + 16px);
 }
 
 .view:focus {
   outline: none;
 }
 
-/* Barra di navigazione: in basso su telefono, colonna a sinistra su iPad/desktop */
+/* Barra di navigazione: ultima riga della griglia su telefono (non fissa: la
+   pagina non scorre, quindi resta ferma da sola), colonna a sinistra su iPad. */
 .nav {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  left: 0;
   z-index: 30;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   padding-bottom: var(--safe-b);
-  background: color-mix(in srgb, var(--bg-elev) 92%, transparent);
+  background: var(--bg-elev);
   border-top: 1px solid var(--line);
-  backdrop-filter: saturate(180%) blur(14px);
 }
 
 .nav__item {
@@ -433,8 +457,31 @@ textarea {
   line-height: 1;
 }
 
+/* Ogni sezione ha il suo colore: si riconosce a colpo d'occhio. */
 .nav__item[aria-current='page'] {
   color: var(--accent);
+}
+
+.nav__item[data-route='dashboard'][aria-current='page'] { color: var(--carbs); }
+.nav__item[data-route='pasti'][aria-current='page'] { color: var(--kcal); }
+.nav__item[data-route='ricette'][aria-current='page'] { color: var(--grape); }
+.nav__item[data-route='dieta'][aria-current='page'] { color: var(--protein); }
+.nav__item[data-route='misure'][aria-current='page'] { color: var(--fat); }
+
+/* Indicatore sopra la voce attiva (barra in basso su telefono). */
+.nav__item {
+  position: relative;
+}
+
+.nav__item[aria-current='page']::before {
+  position: absolute;
+  top: 0;
+  left: 22%;
+  width: 56%;
+  height: 3px;
+  content: '';
+  background: currentcolor;
+  border-radius: 0 0 99px 99px;
 }
 
 @media (min-width: 860px) {
@@ -467,13 +514,12 @@ textarea {
   }
 
   .nav {
-    position: sticky;
-    top: 0;
     grid-area: nav;
     grid-template-columns: 1fr;
     align-content: start;
     gap: 4px;
-    height: 100dvh;
+    height: 100%;
+    overflow-y: auto;
     padding: calc(var(--safe-t) + 20px) 12px 20px calc(var(--safe-l) + 12px);
     border-top: none;
     border-right: 1px solid var(--line);
@@ -496,7 +542,16 @@ textarea {
   }
 
   .nav__item[aria-current='page'] {
-    background: var(--accent-soft);
+    background: color-mix(in srgb, currentcolor 14%, transparent);
+  }
+
+  /* Su colonna l'indicatore diventa una barretta verticale a sinistra. */
+  .nav__item[aria-current='page']::before {
+    top: 20%;
+    left: 0;
+    width: 3px;
+    height: 60%;
+    border-radius: 0 99px 99px 0;
   }
 }
 
@@ -565,13 +620,37 @@ textarea {
 /* ---------- Stat card ---------- */
 
 .stat {
+  position: relative;
   display: grid;
   gap: 4px;
+  overflow: hidden;
   padding: 16px;
   background: var(--bg-elev);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
+}
+
+/* Filo colorato in alto + valore in tinta: dà colore senza urlare. */
+.stat--kcal { --tone: var(--kcal); }
+.stat--protein { --tone: var(--protein); }
+.stat--carbs { --tone: var(--carbs); }
+.stat--fat { --tone: var(--fat); }
+.stat--grape { --tone: var(--grape); }
+.stat--ok { --tone: var(--ok); }
+
+.stat[class*='stat--']::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 3px;
+  content: '';
+  background: var(--tone);
+}
+
+.stat[class*='stat--'] .stat__value {
+  color: var(--tone);
 }
 
 .stat__label {
@@ -1561,6 +1640,68 @@ tbody tr:last-child td {
 
 .recipe__acts .btn + .btn {
   margin-top: 0;
+}
+
+/* Diete mensili. */
+.dietgrid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+}
+
+.dietcard {
+  display: grid;
+  align-content: start;
+  overflow: hidden;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  background: var(--bg-elev);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  transition: transform 0.15s;
+}
+
+.dietcard:active {
+  transform: scale(0.985);
+}
+
+.cover--diet {
+  height: 118px;
+}
+
+.cover--diet .cover__icon {
+  font-size: 46px;
+}
+
+.dietcard__body {
+  display: grid;
+  gap: 5px;
+  padding: 14px 16px 16px;
+}
+
+.dietcard__name {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.dietcard__claim {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-dim);
+}
+
+.dietcard__macro {
+  margin-top: 3px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+}
+
+.dietcard__macro b {
+  font-size: 15px;
+  color: var(--kcal);
 }
 
 /* Pannello Idee. */

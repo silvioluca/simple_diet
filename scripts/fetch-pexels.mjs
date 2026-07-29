@@ -30,7 +30,13 @@ const argOf = (nome) => {
 const ONLY = (argOf('--only') || '').split(',').map((s) => s.trim()).filter(Boolean);
 const SKIP = Number(argOf('--skip') || 0);
 const HERE = dirname(fileURLToPath(import.meta.url));
-const DATA = join(HERE, '..', 'public', 'js', 'data', 'recipe-ideas.js');
+
+// --diete lavora sulle tre diete mensili invece che sulle idee ricette.
+const DIETE = process.argv.includes('--diete');
+const DATA = DIETE
+  ? join(HERE, '..', 'public', 'js', 'data', 'monthly-diets.js')
+  : join(HERE, '..', 'public', 'js', 'data', 'recipe-ideas.js');
+const NOME_BLOCCO = DIETE ? 'DIET_PHOTOS' : 'IDEA_PHOTOS';
 
 if (!KEY) {
   console.error('Manca PEXELS_API_KEY. Prendila gratis su https://www.pexels.com/api/ e riprova:');
@@ -38,8 +44,14 @@ if (!KEY) {
   process.exit(1);
 }
 
+const QUERIES_DIETE = {
+  mediterranea: 'mediterranean food table olives',
+  vegetariana: 'vegetarian food vegetables table',
+  proteica: 'protein food chicken eggs meal prep'
+};
+
 // Query in inglese: il catalogo Pexels è indicizzato in inglese.
-const QUERIES = {
+const QUERIES_IDEE = {
   'porridge-mirtilli': 'oatmeal porridge blueberries',
   'yogurt-bowl-proteica': 'greek yogurt bowl berries',
   'pancake-proteici-banana': 'banana pancakes',
@@ -93,13 +105,16 @@ const QUERIES = {
   'tempeh-verdure': 'tempeh vegetables'
 };
 
+const QUERIES = DIETE ? QUERIES_DIETE : QUERIES_IDEE;
+
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const falliti = [];
 
 // Riparte da quanto già risolto, così --only non perde il resto.
 const srcIniziale = readFileSync(DATA, 'utf8');
 const esistenti = {};
-const blocoAttuale = srcIniziale.match(/export const IDEA_PHOTOS = \{([\s\S]*?)\n\};/);
+const RE_BLOCCO = new RegExp('export const ' + NOME_BLOCCO + ' = \\{([\\s\\S]*?)\\n\\};');
+const blocoAttuale = srcIniziale.match(RE_BLOCCO);
 if (blocoAttuale) {
   for (const m of blocoAttuale[1].matchAll(/'([^']+)':\s*\{\s*url:\s*'([^']+)',\s*credit:\s*"?'?([^"']+)"?'?\s*\}/g)) {
     esistenti[m[1]] = { url: m[2], credit: m[3] };
@@ -166,12 +181,12 @@ const righe = Object.entries(risolte)
   .sort(([a], [b]) => a.localeCompare(b))
   .map(([id, p]) => `  '${id}': { url: '${p.url}', credit: ${JSON.stringify(p.credit)} }`)
   .join(',\n');
-const blocco = `export const IDEA_PHOTOS = {\n${righe}\n};`;
-const next = src.replace(/export const IDEA_PHOTOS = \{[\s\S]*?\n\};/, blocco);
+const blocco = `export const ${NOME_BLOCCO} = {\n${righe}\n};`;
+const next = src.replace(RE_BLOCCO, blocco);
 
 if (next === src) {
-  console.error('\nBlocco IDEA_PHOTOS non trovato in recipe-ideas.js: niente scritto.');
+  console.error(`\nBlocco ${NOME_BLOCCO} non trovato in ${DATA}: niente scritto.`);
   process.exit(1);
 }
 writeFileSync(DATA, next);
-console.log(`\nScritto IDEA_PHOTOS in ${DATA}`);
+console.log(`\nScritto ${NOME_BLOCCO} in ${DATA}`);
