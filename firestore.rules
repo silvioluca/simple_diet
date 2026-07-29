@@ -1,0 +1,41 @@
+rules_version = '2';
+
+// Simple Diet — accesso ristretto agli account autorizzati.
+//
+// Queste regole sono l'UNICA protezione reale dei dati: apiKey e projectId sono
+// pubblici nel JavaScript dell'app, quindi chiunque può interrogare Firestore
+// direttamente. Il controllo ALLOWED_EMAILS in config.js nasconde solo la UI.
+//
+// Tieni questa lista allineata a ALLOWED_EMAILS in public/js/config.js.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function allowed() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email in [
+             'silvio.phy@gmail.com',
+             'sara.scavo63@gmail.com'
+           ];
+    }
+
+    function owner(uid) {
+      return allowed() && request.auth.uid == uid;
+    }
+
+    // Ogni account vede e scrive soltanto il proprio documento e sottoraccolte
+    // (entries, recipes, measures, foods).
+    match /users/{uid} {
+      allow read, write: if owner(uid);
+
+      match /{sub=**} {
+        allow read, write: if owner(uid);
+      }
+    }
+
+    // Tutto il resto è negato.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

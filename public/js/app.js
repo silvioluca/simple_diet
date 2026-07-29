@@ -181,6 +181,7 @@ document.addEventListener(
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(() => {});
+    // Relativo alla pagina: funziona anche servito da una sottocartella.
+    navigator.serviceWorker.register(new URL('../sw.js', import.meta.url)).catch(() => {});
   });
 }

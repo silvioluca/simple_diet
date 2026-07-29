@@ -11,15 +11,17 @@
     <meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)" />
 
-    <link rel="manifest" href="/manifest.webmanifest" />
-    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <!-- Percorsi relativi: l'app funziona sia in radice (Firebase Hosting)
+         sia in una sottocartella (GitHub Pages: /nome-repo/). -->
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Simple Diet" />
     <meta name="mobile-web-app-capable" content="yes" />
 
-    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="css/style.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
   </head>
   <body>
@@ -98,6 +100,6 @@
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <div id="modal-root"></div>
 
-    <script type="module" src="/js/app.js"></script>
+    <script type="module" src="js/app.js"></script>
   </body>
 </html>

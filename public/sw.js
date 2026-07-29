@@ -6,36 +6,42 @@
 // il codice cerca elementi che non esistono più. Meglio qualche ms in più.
 //
 // I dati Firestore hanno già la loro persistenza offline nell'SDK.
-const VERSION = 'v6';
+const VERSION = 'v7';
 const SHELL = `simple-diet-shell-${VERSION}`;
 
+// La cartella in cui vive il service worker: '/' su Firebase Hosting,
+// '/nome-repo/' su GitHub Pages. Tutto il resto si calcola da qui.
+const BASE = new URL('./', self.location).pathname;
+const SHELL_INDEX = BASE + 'index.html';
+
+// Relativi al service worker: valgono in radice e in sottocartella.
 const SHELL_FILES = [
-  '/',
-  '/index.html',
-  '/manifest.webmanifest',
-  '/css/style.css',
-  '/js/app.js',
-  '/js/auth.js',
-  '/js/charts.js',
-  '/js/config.js',
-  '/js/firebase-init.js',
-  '/js/foodsearch.js',
-  '/js/ideas.js',
-  '/js/planimport.js',
-  '/js/data/foods-base.js',
-  '/js/data/recipe-ideas.js',
-  '/js/off.js',
-  '/js/router.js',
-  '/js/store.js',
-  '/js/ui.js',
-  '/js/utils.js',
-  '/js/views/dashboard.js',
-  '/js/views/meals.js',
-  '/js/views/diet.js',
-  '/js/views/measures.js',
-  '/js/views/profile.js',
-  '/js/views/recipes.js',
-  '/icons/icon.svg'
+  './',
+  './index.html',
+  './manifest.webmanifest',
+  './css/style.css',
+  './js/app.js',
+  './js/auth.js',
+  './js/charts.js',
+  './js/config.js',
+  './js/firebase-init.js',
+  './js/foodsearch.js',
+  './js/ideas.js',
+  './js/planimport.js',
+  './js/data/foods-base.js',
+  './js/data/recipe-ideas.js',
+  './js/off.js',
+  './js/router.js',
+  './js/store.js',
+  './js/ui.js',
+  './js/utils.js',
+  './js/views/dashboard.js',
+  './js/views/meals.js',
+  './js/views/diet.js',
+  './js/views/measures.js',
+  './js/views/profile.js',
+  './js/views/recipes.js',
+  './icons/icon.svg'
 ];
 
 self.addEventListener('install', (event) => {
@@ -78,7 +84,7 @@ self.addEventListener('fetch', (event) => {
         const cached = await caches.match(request, { ignoreSearch: true });
         if (cached) return cached;
         // Offline su una navigazione: serve comunque la shell.
-        if (request.mode === 'navigate') return caches.match('/index.html');
+        if (request.mode === 'navigate') return caches.match(SHELL_INDEX);
         return Response.error();
       })
   );

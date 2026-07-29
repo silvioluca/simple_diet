@@ -161,7 +161,27 @@ firebase serve
 
 > Aprire `index.html` da file system **non** funziona: gli ES module richiedono `http://`.
 
-### 4. Deploy
+### 4. Deploy su GitHub Pages
+
+Il workflow [.github/workflows/pages.yml](.github/workflows/pages.yml) pubblica `public/`
+a ogni push su `main`. Da abilitare una volta sola:
+
+1. **Settings → Pages → Build and deployment → Source: GitHub Actions**
+2. **Console Firebase → Authentication → Settings → Authorized domains → Aggiungi dominio**:
+   `silvioluca.github.io` — senza questo il login con Google viene rifiutato.
+3. **Console Firebase → Firestore → Regole**: incolla [firestore.rules](firestore.rules)
+   e pubblica.
+
+Il sito esce su `https://<utente>.github.io/<repo>/`, cioè in una **sottocartella**: per
+questo tutti i percorsi dell'app sono relativi (`css/style.css`, non `/css/style.css`) e
+il manifest usa `"scope": "./"`. Funziona identico servito dalla radice.
+
+> ⚠️ Un sito su GitHub Pages è **pubblico**. `apiKey` e `projectId` Firebase sono nel
+> JavaScript e quindi visibili: `ALLOWED_EMAILS` in `config.js` nasconde solo l'interfaccia.
+> Le regole Firestore sono l'unica cosa che protegge davvero i dati. Pubblicale prima
+> di rendere raggiungibile il sito.
+
+### 5. Deploy su Firebase Hosting
 
 ```bash
 firebase deploy
