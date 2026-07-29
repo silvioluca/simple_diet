@@ -6,9 +6,20 @@
 //    e replica la stessa lista in firestore.rules
 // ---------------------------------------------------------------------------
 
+// authDomain: quando l'app è servita da Firebase Hosting usa il dominio corrente,
+// così il gestore di autenticazione (/__/auth/handler) è SULLO STESSO ORIGIN.
+// Serve per l'app installata su iPad: Safari blocca l'accesso allo storage fra
+// domini diversi (ITP) e signInWithRedirect non riesce a completare il login.
+// Da GitHub Pages non è possibile — lì resta il flusso a popup, che funziona
+// nelle schede normali ma non in modalità schermo intero.
+const HOSTING_DOMAIN = 'simple-diet-4fca2.web.app';
+const suFirebaseHosting =
+  typeof location !== 'undefined' &&
+  /\.web\.app$|\.firebaseapp\.com$/.test(location.hostname);
+
 export const firebaseConfig = {
   apiKey: "AIzaSyAoPgpFNKQeOXOnNDn735AFy89kFxrJK7M",
-  authDomain: "simple-diet-4fca2.firebaseapp.com",
+  authDomain: suFirebaseHosting ? location.hostname : HOSTING_DOMAIN,
   projectId: "simple-diet-4fca2",
   storageBucket: "simple-diet-4fca2.firebasestorage.app",
   messagingSenderId: "1078274313903",
