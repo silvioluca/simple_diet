@@ -178,7 +178,7 @@ function suggestionHTML(food, index, src) {
  * Scheda di ricerca alimento.
  * `onPick(food)` sostituisce il salvataggio nel diario (usato dal piano settimanale).
  */
-export function openFoodPicker(slot, { onPick, query = '' } = {}) {
+export function openFoodPicker(slot, { onPick } = {}) {
   let controller = null;
   let localShown = [];   // ricette + alimenti base + recenti
   let offShown = [];     // prodotti confezionati da Open Food Facts
@@ -199,7 +199,7 @@ export function openFoodPicker(slot, { onPick, query = '' } = {}) {
         <div data-mode="browse">
           <div class="search">
             <input id="q" type="search" placeholder="Scrivi qui il tuo alimento" autocomplete="off"
-                   enterkeyhint="search" value="${esc(query)}" />
+                   enterkeyhint="search" />
             <span class="search__spin" id="spin" hidden></span>
           </div>
           <p class="picker__label" id="list-label">Recenti</p>
@@ -226,15 +226,15 @@ export function openFoodPicker(slot, { onPick, query = '' } = {}) {
           <button class="btn" id="m-next" type="button">Continua</button>
         </div>
 
+        <div class="picker__fine">
+          <button class="btn btn--fine" type="button" data-close>✓ Fine</button>
+        </div>
+
         <footer class="picker__foot">
           <button class="chip" type="button" data-mode-btn="browse" aria-pressed="true">🔍 Cerca</button>
           <button class="chip" type="button" data-mode-btn="barcode" aria-pressed="false">📷 Barcode</button>
           <button class="chip" type="button" data-mode-btn="manual" aria-pressed="false">✏️ Manuale</button>
         </footer>
-
-        <div class="picker__fine">
-          <button class="btn btn--fine" type="button" data-close>✓ Fine</button>
-        </div>
       </div>`,
 
     onMount: (panel, close) => {
@@ -246,20 +246,14 @@ export function openFoodPicker(slot, { onPick, query = '' } = {}) {
       // Il pasto arriva da dove hai premuto (o dall'ora, col pulsante +):
       // niente selettore qui, si corregge semmai nella scheda della porzione.
       //
-      // Dopo aver aggiunto si torna qui, con la stessa ricerca: si registra
-      // un pasto intero senza riaprire la modale a ogni alimento. Si esce
-      // con "Fine".
+      // Dopo aver aggiunto si torna qui, con il campo svuotato e pronto per
+      // il prossimo alimento: si registra un pasto intero senza riaprire la
+      // modale ogni volta. Si esce con "Fine".
       const pick = (food) => {
         if (!food) return;
-        const ultimaRicerca = panel.querySelector('#q').value;
         close();
         if (onPick) onPick(food);
-        else
-          portionSheet({
-            food,
-            slot,
-            onSaved: () => openFoodPicker(slot, { query: ultimaRicerca })
-          });
+        else portionSheet({ food, slot, onSaved: () => openFoodPicker(slot) });
       };
 
       const offLabel = panel.querySelector('#off-label');
@@ -290,13 +284,10 @@ export function openFoodPicker(slot, { onPick, query = '' } = {}) {
       };
 
       // Ricette e alimenti recenti dell'utente, poi i suggerimenti iniziali.
-      // L'`await` fa proseguire il resto di onMount, quindi `runSearch` esiste
-      // già quando serve riprendere una ricerca precedente.
       (async () => {
         try {
           await loadLocalIndex();
-          if (queryInput.value.trim()) runSearch(queryInput.value);
-          else showDefaults();
+          showDefaults();
         } catch (err) {
           listBox.innerHTML = `<p class="empty">${esc(err.message)}</p>`;
         }

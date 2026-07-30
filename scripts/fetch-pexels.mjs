@@ -102,7 +102,27 @@ const QUERIES_IDEE = {
   'crema-funghi-orzo': 'mushroom risotto barley',
   'gamberi-zucchine-limone': 'shrimp zucchini lemon',
   'sformato-broccoli': 'broccoli casserole bake',
-  'tempeh-verdure': 'tempeh vegetables'
+  'tempeh-verdure': 'tempeh vegetables',
+  'yogurt-cacao-banana': 'chocolate yogurt bowl banana',
+  'pane-ricotta-miele': 'honey toast breakfast bread',
+  'crema-zucchine-menta': 'green cream soup bowl',
+  'pollo-broccoli-riso': 'grilled chicken rice plate',
+  'insalata-farro-tonno': 'grain salad tuna bowl',
+  'uova-avocado-pomodorini': 'scrambled eggs avocado toast',
+  'salmone-quinoa-asparagi': 'salmon quinoa asparagus plate',
+  'zuppa-orzo-verdure': 'barley vegetable soup',
+  'spiedini-pollo-peperoni': 'chicken skewers peppers grill',
+  'melanzane-ripiene-quinoa': 'stuffed eggplant baked',
+  'pasta-fredda-mozzarella': 'cold pasta salad mozzarella',
+  'frittata-spinaci-patate': 'spinach potato frittata',
+  'bowl-ceci-tahina': 'chickpea salad bowl tahini',
+  'merluzzo-zucchine-limone': 'white fish zucchini lemon',
+  'riso-venere-gamberi': 'black rice shrimp',
+  'tacos-fagioli': 'bean tacos',
+  'crema-piselli-menta': 'pea soup mint bowl',
+  'tacchino-funghi': 'chicken breast mushroom sauce plate',
+  'insalata-polpo-patate': 'octopus potato salad',
+  'lenticchie-riso-curry': 'red lentil curry rice'
 };
 
 const QUERIES = DIETE ? QUERIES_DIETE : QUERIES_IDEE;

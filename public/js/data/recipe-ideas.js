@@ -841,6 +841,328 @@ export const RECIPE_IDEAS = [
       ['Olio di semi', 15]
     ],
     steps: 'Rosola il tempeh a fette. Salta cavolo e carote a julienne 5 minuti, unisci il tempeh, la soia e lo zenzero.'
+  },
+
+  // ---------------- Aggiunte ----------------
+  {
+    id: 'yogurt-cacao-banana',
+    name: 'Yogurt proteico al cacao',
+    tags: ['colazione', 'proteica', 'veloce', 'senza cottura'],
+    minutes: 5,
+    servings: 1,
+    ingredients: [
+      ['Yogurt greco 0%', 200],
+      ['Cacao amaro in polvere', 8],
+      ['Banana', 100],
+      ['Burro di arachidi', 15],
+      ['Miele', 8]
+    ],
+    steps: 'Mescola yogurt e cacao fino a colore uniforme. Completa con banana a rondelle, burro di arachidi e miele.'
+  },
+  {
+    id: 'pane-ricotta-miele',
+    name: 'Pane, ricotta e miele',
+    tags: ['colazione', 'vegetariana', 'veloce'],
+    minutes: 5,
+    servings: 1,
+    ingredients: [
+      ['Pane integrale', 80],
+      ['Ricotta vaccina', 100],
+      ['Miele', 15],
+      ['Noci', 15],
+      ['Cannella', 1]
+    ],
+    steps: 'Tosta il pane, spalma la ricotta, completa con miele, noci spezzettate e una spolverata di cannella.'
+  },
+  {
+    id: 'crema-zucchine-menta',
+    name: 'Vellutata di zucchine e menta',
+    tags: ['cena', 'vegetariana', 'leggera', 'veloce'],
+    minutes: 25,
+    servings: 2,
+    ingredients: [
+      ['Zucchine', 600],
+      ['Patate', 150],
+      ['Cipolla', 60],
+      ['Menta fresca', 8],
+      ['Olio extravergine d’oliva', 15],
+      ['Brodo vegetale', 400]
+    ],
+    steps: 'Cuoci zucchine, patate e cipolla nel brodo per 18 minuti. Frulla con la menta e completa con olio a crudo.'
+  },
+  {
+    id: 'pollo-broccoli-riso',
+    name: 'Pollo, broccoli e riso',
+    tags: ['pranzo', 'proteica', 'meal prep', 'one-pot'],
+    minutes: 30,
+    servings: 2,
+    ingredients: [
+      ['Petto di pollo (c)', 350],
+      ['Riso basmati (c)', 140],
+      ['Broccoli', 300],
+      ['Aglio', 5],
+      ['Olio extravergine d’oliva', 18],
+      ['Salsa di soia', 20]
+    ],
+    steps: 'Lessa il riso e sbollenta i broccoli. Salta il pollo a dadini con aglio e olio, unisci tutto e sfuma con la soia.'
+  },
+  {
+    id: 'insalata-farro-tonno',
+    name: 'Insalata di farro e tonno',
+    tags: ['pranzo', 'proteica', 'fredda', 'meal prep'],
+    minutes: 30,
+    servings: 2,
+    ingredients: [
+      ['Farro perlato (c)', 140],
+      ['Tonno in scatola al naturale', 160],
+      ['Pomodorini', 150],
+      ['Rucola', 50],
+      ['Olive nere', 40],
+      ['Olio extravergine d’oliva', 20]
+    ],
+    steps: 'Lessa il farro e raffreddalo. Uniscilo a tonno, pomodorini, rucola e olive, condisci con olio.'
+  },
+  {
+    id: 'uova-avocado-pomodorini',
+    name: 'Uova strapazzate con avocado',
+    tags: ['colazione', 'proteica', 'veloce', 'low carb'],
+    minutes: 10,
+    servings: 1,
+    ingredients: [
+      ['Uovo intero', 165],
+      ['Avocado', 70],
+      ['Pomodorini', 100],
+      ['Pane integrale', 60],
+      ['Olio extravergine d’oliva', 8]
+    ],
+    steps: 'Strapazza le uova a fuoco basso. Servi con avocado a fette, pomodorini e pane tostato.'
+  },
+  {
+    id: 'salmone-quinoa-asparagi',
+    name: 'Salmone, quinoa e asparagi',
+    tags: ['cena', 'proteica', 'meal prep'],
+    minutes: 30,
+    servings: 2,
+    ingredients: [
+      ['Salmone (c)', 300],
+      ['Quinoa (c)', 120],
+      ['Asparagi', 250],
+      ['Limone', 30],
+      ['Olio extravergine d’oliva', 15],
+      ['Aneto', 3]
+    ],
+    steps: 'Lessa la quinoa. Cuoci salmone e asparagi in forno 18 minuti a 190°C, completa con limone e aneto.'
+  },
+  {
+    id: 'zuppa-orzo-verdure',
+    name: 'Zuppa di orzo e verdure',
+    tags: ['cena', 'vegana', 'one-pot', 'inverno'],
+    minutes: 40,
+    servings: 3,
+    ingredients: [
+      ['Orzo perlato (c)', 150],
+      ['Carote', 150],
+      ['Sedano', 100],
+      ['Zucca', 250],
+      ['Cipolla', 80],
+      ['Olio extravergine d’oliva', 25],
+      ['Brodo vegetale', 600]
+    ],
+    steps: 'Stufa il trito di verdure, unisci orzo e zucca a cubetti, copri col brodo e cuoci 30 minuti.'
+  },
+  {
+    id: 'spiedini-pollo-peperoni',
+    name: 'Spiedini di pollo e peperoni',
+    tags: ['cena', 'proteica', 'low carb', 'estate'],
+    minutes: 25,
+    servings: 2,
+    ingredients: [
+      ['Petto di pollo (c)', 400],
+      ['Peperoni', 250],
+      ['Cipolla', 100],
+      ['Paprika', 4],
+      ['Olio extravergine d’oliva', 18],
+      ['Limone', 30]
+    ],
+    steps: 'Alterna pollo, peperoni e cipolla sugli spiedini. Condisci con olio, paprika e limone e cuoci alla piastra 12 minuti.'
+  },
+  {
+    id: 'melanzane-ripiene-quinoa',
+    name: 'Melanzane ripiene di quinoa',
+    tags: ['cena', 'vegetariana', 'estate'],
+    minutes: 50,
+    servings: 2,
+    ingredients: [
+      ['Melanzane', 500],
+      ['Quinoa (c)', 100],
+      ['Pomodorini', 150],
+      ['Parmigiano Reggiano', 30],
+      ['Basilico fresco', 8],
+      ['Olio extravergine d’oliva', 20]
+    ],
+    steps: 'Svuota le melanzane e infornale 15 minuti. Riempi con quinoa lessa, pomodorini e parmigiano, cuoci altri 20 minuti.'
+  },
+  {
+    id: 'pasta-fredda-mozzarella',
+    name: 'Pasta fredda con mozzarella',
+    tags: ['pranzo', 'vegetariana', 'fredda', 'estate', 'veloce'],
+    minutes: 20,
+    servings: 2,
+    ingredients: [
+      ['Pasta di semola (c)', 160],
+      ['Mozzarella light', 150],
+      ['Pomodorini', 200],
+      ['Basilico fresco', 10],
+      ['Olive nere', 40],
+      ['Olio extravergine d’oliva', 20]
+    ],
+    steps: 'Lessa la pasta e raffreddala sotto acqua corrente. Unisci mozzarella a cubetti, pomodorini, olive e basilico.'
+  },
+  {
+    id: 'frittata-spinaci-patate',
+    name: 'Frittata di spinaci e patate',
+    tags: ['cena', 'vegetariana', 'proteica', 'meal prep'],
+    minutes: 30,
+    servings: 2,
+    ingredients: [
+      ['Uovo intero', 220],
+      ['Spinaci', 250],
+      ['Patate', 200],
+      ['Cipolla', 50],
+      ['Parmigiano Reggiano', 25],
+      ['Olio extravergine d’oliva', 12]
+    ],
+    steps: 'Lessa le patate a cubetti e appassisci gli spinaci. Unisci alle uova sbattute col parmigiano e cuoci in padella coperta.'
+  },
+  {
+    id: 'bowl-ceci-tahina',
+    name: 'Bowl di ceci e tahina',
+    tags: ['pranzo', 'vegana', 'senza cottura', 'veloce'],
+    minutes: 10,
+    servings: 2,
+    ingredients: [
+      ['Ceci in scatola', 300],
+      ['Cetriolo', 200],
+      ['Pomodorini', 150],
+      ['Tahina', 30],
+      ['Limone', 30],
+      ['Prezzemolo', 8]
+    ],
+    steps: 'Sciacqua i ceci e uniscili a cetriolo e pomodorini a cubetti. Condisci con tahina stemperata nel limone e prezzemolo.'
+  },
+  {
+    id: 'merluzzo-zucchine-limone',
+    name: 'Merluzzo con zucchine al limone',
+    tags: ['cena', 'proteica', 'low carb', 'veloce'],
+    minutes: 20,
+    servings: 2,
+    ingredients: [
+      ['Merluzzo (c)', 400],
+      ['Zucchine', 300],
+      ['Limone', 40],
+      ['Aglio', 5],
+      ['Olio extravergine d’oliva', 15],
+      ['Prezzemolo', 5]
+    ],
+    steps: 'Salta le zucchine a rondelle con aglio e olio. Adagia il merluzzo, copri e cuoci 8 minuti, sfuma col limone.'
+  },
+  {
+    id: 'riso-venere-gamberi',
+    name: 'Riso venere con gamberi',
+    tags: ['pranzo', 'proteica', 'fredda'],
+    minutes: 35,
+    servings: 2,
+    ingredients: [
+      ['Riso venere (c)', 140],
+      ['Gamberi (c)', 250],
+      ['Zucchine', 200],
+      ['Limone', 30],
+      ['Olio extravergine d’oliva', 18],
+      ['Prezzemolo', 5]
+    ],
+    steps: 'Lessa il riso venere. Salta gamberi e zucchine a dadini, unisci al riso e condisci con limone e prezzemolo.'
+  },
+  {
+    id: 'tacos-fagioli',
+    name: 'Tacos di fagioli',
+    tags: ['cena', 'vegana', 'veloce'],
+    minutes: 20,
+    servings: 2,
+    ingredients: [
+      ['Tortilla di grano', 120],
+      ['Fagioli in scatola', 250],
+      ['Mais dolce', 100],
+      ['Pomodoro', 150],
+      ['Avocado', 80],
+      ['Peperoncino in polvere', 3]
+    ],
+    steps: 'Scalda i fagioli col peperoncino e schiacciali grossolanamente. Farcisci le tortilla con fagioli, mais, pomodoro e avocado.'
+  },
+  {
+    id: 'crema-piselli-menta',
+    name: 'Vellutata di piselli e menta',
+    tags: ['cena', 'vegana', 'leggera', 'veloce'],
+    minutes: 20,
+    servings: 2,
+    ingredients: [
+      ['Piselli freschi', 400],
+      ['Patate', 120],
+      ['Cipollotto', 60],
+      ['Menta fresca', 6],
+      ['Olio extravergine d’oliva', 15],
+      ['Brodo vegetale', 350]
+    ],
+    steps: 'Cuoci piselli, patate e cipollotto nel brodo 15 minuti. Frulla con la menta e completa con olio a crudo.'
+  },
+  {
+    id: 'tacchino-funghi',
+    name: 'Tacchino ai funghi',
+    tags: ['cena', 'proteica', 'low carb', 'veloce'],
+    minutes: 20,
+    servings: 2,
+    ingredients: [
+      ['Petto di tacchino (c)', 400],
+      ['Funghi champignon', 300],
+      ['Aglio', 5],
+      ['Prezzemolo', 6],
+      ['Olio extravergine d’oliva', 18],
+      ['Vino bianco', 40]
+    ],
+    steps: 'Rosola il tacchino a fette, mettilo da parte. Salta i funghi con aglio, sfuma col vino, rimetti la carne e completa col prezzemolo.'
+  },
+  {
+    id: 'insalata-polpo-patate',
+    name: 'Insalata di polpo e patate',
+    tags: ['pranzo', 'proteica', 'fredda'],
+    minutes: 45,
+    servings: 2,
+    ingredients: [
+      ['Polpo', 350],
+      ['Patate', 300],
+      ['Sedano', 80],
+      ['Olive nere', 40],
+      ['Limone', 30],
+      ['Olio extravergine d’oliva', 20],
+      ['Prezzemolo', 6]
+    ],
+    steps: 'Lessa polpo e patate, taglia entrambi a pezzi e falli raffreddare. Condisci con sedano, olive, limone, olio e prezzemolo.'
+  },
+  {
+    id: 'lenticchie-riso-curry',
+    name: 'Lenticchie e riso al curry',
+    tags: ['cena', 'vegana', 'proteica', 'one-pot', 'meal prep'],
+    minutes: 35,
+    servings: 3,
+    ingredients: [
+      ['Lenticchie rosse decorticate (c)', 160],
+      ['Riso integrale (c)', 120],
+      ['Cipolla', 80],
+      ['Curry in polvere', 6],
+      ['Latte di cocco da bere', 200],
+      ['Olio di semi', 15],
+      ['Zenzero fresco', 8]
+    ],
+    steps: 'Soffriggi cipolla e zenzero, unisci lenticchie, curry e latte di cocco con acqua a coprire. Cuoci 20 minuti e servi col riso.'
   }
 ];
 
@@ -908,7 +1230,27 @@ export const IDEA_ICONS = {
   'crema-funghi-orzo': '🍄',
   'gamberi-zucchine-limone': '🦐',
   'sformato-broccoli': '🥦',
-  'tempeh-verdure': '🥬'
+  'tempeh-verdure': '🥬',
+  'yogurt-cacao-banana': '🍫',
+  'pane-ricotta-miele': '🍯',
+  'crema-zucchine-menta': '🌱',
+  'pollo-broccoli-riso': '🍚',
+  'insalata-farro-tonno': '🐟',
+  'uova-avocado-pomodorini': '🍳',
+  'salmone-quinoa-asparagi': '🐠',
+  'zuppa-orzo-verdure': '🍲',
+  'spiedini-pollo-peperoni': '🍢',
+  'melanzane-ripiene-quinoa': '🍆',
+  'pasta-fredda-mozzarella': '🧀',
+  'frittata-spinaci-patate': '🥔',
+  'bowl-ceci-tahina': '🥣',
+  'merluzzo-zucchine-limone': '🍋',
+  'riso-venere-gamberi': '🦐',
+  'tacos-fagioli': '🌮',
+  'crema-piselli-menta': '🫛',
+  'tacchino-funghi': '🍄',
+  'insalata-polpo-patate': '🐙',
+  'lenticchie-riso-curry': '🍛'
 };
 
 /**
@@ -919,6 +1261,7 @@ export const IDEA_ICONS = {
  *   { id: { url, credit } }
  */
 export const IDEA_PHOTOS = {
+  'bowl-ceci-tahina': { url: 'https://images.pexels.com/photos/6252680/pexels-photo-6252680.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Nataliya Vaitkevich / Pexels" },
   'bresaola-rucola-grana': { url: 'https://images.pexels.com/photos/35476004/pexels-photo-35476004.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Burak Eroglu 🇹🇷 / Pexels" },
   'buddha-bowl': { url: 'https://images.pexels.com/photos/19150338/pexels-photo-19150338.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Nadja M / Pexels" },
   'burger-lenticchie': { url: 'https://images.pexels.com/photos/5639459/pexels-photo-5639459.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Shameel mukkath / Pexels" },
@@ -927,28 +1270,39 @@ export const IDEA_PHOTOS = {
   'chili-vegetariano': { url: 'https://images.pexels.com/photos/32667184/pexels-photo-32667184.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Magda Ehlers / Pexels" },
   'cous-cous-pollo-verdure': { url: 'https://images.pexels.com/photos/1618952/pexels-photo-1618952.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Zak Chapman / Pexels" },
   'crema-funghi-orzo': { url: 'https://images.pexels.com/photos/11190138/pexels-photo-11190138.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Jana Ohajdova / Pexels" },
+  'crema-piselli-menta': { url: 'https://images.pexels.com/photos/24186408/pexels-photo-24186408.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Change C.C / Pexels" },
+  'crema-zucchine-menta': { url: 'https://images.pexels.com/photos/20004982/pexels-photo-20004982.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Rahul Sonawane / Pexels" },
   'farro-verdure': { url: 'https://images.pexels.com/photos/9219081/pexels-photo-9219081.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Loren Castillo / Pexels" },
   'frittata-albumi-verdure': { url: 'https://images.pexels.com/photos/20422125/pexels-photo-20422125.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Jack Baghel / Pexels" },
+  'frittata-spinaci-patate': { url: 'https://images.pexels.com/photos/38544360/pexels-photo-38544360.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Eddie O. / Pexels" },
   'frittata-zucchine-forno': { url: 'https://images.pexels.com/photos/5639282/pexels-photo-5639282.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Shameel mukkath / Pexels" },
   'gamberi-zucchine-limone': { url: 'https://images.pexels.com/photos/23180805/pexels-photo-23180805.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Orest Lenja / Pexels" },
   'hummus-casalingo': { url: 'https://images.pexels.com/photos/6252675/pexels-photo-6252675.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Nataliya Vaitkevich / Pexels" },
+  'insalata-farro-tonno': { url: 'https://images.pexels.com/photos/19051901/pexels-photo-19051901.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Nadin Sh / Pexels" },
   'insalata-finocchi-arance': { url: 'https://images.pexels.com/photos/6836096/pexels-photo-6836096.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "eat kubba / Pexels" },
   'insalata-greca': { url: 'https://images.pexels.com/photos/3026013/pexels-photo-3026013.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "TUBARONES PHOTOGRAPHY / Pexels" },
+  'insalata-polpo-patate': { url: 'https://images.pexels.com/photos/38407736/pexels-photo-38407736.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Image Hunter / Pexels" },
   'insalata-quinoa-avocado': { url: 'https://images.pexels.com/photos/5639363/pexels-photo-5639363.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Shameel mukkath / Pexels" },
   'insalata-riso-integrale': { url: 'https://images.pexels.com/photos/6978146/pexels-photo-6978146.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Heather Brock / Pexels" },
   'insalata-tonno-fagioli': { url: 'https://images.pexels.com/photos/6544260/pexels-photo-6544260.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Alesia  Kozik / Pexels" },
+  'lenticchie-riso-curry': { url: 'https://images.pexels.com/photos/28286241/pexels-photo-28286241.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Nic Wood / Pexels" },
+  'melanzane-ripiene-quinoa': { url: 'https://images.pexels.com/photos/29040190/pexels-photo-29040190.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Yesim  G. Ozdemir / Pexels" },
   'merluzzo-forno-patate': { url: 'https://images.pexels.com/photos/19748960/pexels-photo-19748960.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Nicu Cobasnean / Pexels" },
+  'merluzzo-zucchine-limone': { url: 'https://images.pexels.com/photos/14537684/pexels-photo-14537684.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Cristian Mihaila / Pexels" },
   'omelette-spinaci-feta': { url: 'https://images.pexels.com/photos/5840304/pexels-photo-5840304.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "ROMAN ODINTSOV / Pexels" },
   'orata-verdure': { url: 'https://images.pexels.com/photos/15735639/pexels-photo-15735639.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Ana Palade / Pexels" },
   'overnight-oats': { url: 'https://images.pexels.com/photos/5150202/pexels-photo-5150202.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "ROMAN ODINTSOV / Pexels" },
   'pancake-proteici-banana': { url: 'https://images.pexels.com/photos/7144976/pexels-photo-7144976.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Monstera Production / Pexels" },
+  'pane-ricotta-miele': { url: 'https://images.pexels.com/photos/7167848/pexels-photo-7167848.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "eat kubba / Pexels" },
   'parmigiana-leggera': { url: 'https://images.pexels.com/photos/1707917/pexels-photo-1707917.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Melanie Dompierre / Pexels" },
+  'pasta-fredda-mozzarella': { url: 'https://images.pexels.com/photos/34636452/pexels-photo-34636452.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Novkov Visuals / Pexels" },
   'pasta-integrale-zucchine-gamberi': { url: 'https://images.pexels.com/photos/11654218/pexels-photo-11654218.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "adrian vieriu / Pexels" },
   'pasta-legumi-pomodoro': { url: 'https://images.pexels.com/photos/28936956/pexels-photo-28936956.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "nikki awal / Pexels" },
   'pasta-pomodorini-ricotta': { url: 'https://images.pexels.com/photos/36430172/pexels-photo-36430172.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Willians Huerta / Pexels" },
   'patate-forno-rosmarino': { url: 'https://images.pexels.com/photos/162763/delicious-garnish-potatoes-fried-162763.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Pixabay / Pexels" },
   'peperoni-ripieni-riso': { url: 'https://images.pexels.com/photos/31953512/pexels-photo-31953512.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Nur Tok / Pexels" },
   'poke-salmone': { url: 'https://images.pexels.com/photos/12814860/pexels-photo-12814860.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Nadin Sh / Pexels" },
+  'pollo-broccoli-riso': { url: 'https://images.pexels.com/photos/19938618/pexels-photo-19938618.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "wutthichai charoenburi / Pexels" },
   'pollo-limone-rosmarino': { url: 'https://images.pexels.com/photos/16510619/pexels-photo-16510619.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Sternsteiger Stahlwaren / Pexels" },
   'pollo-patate-dolci': { url: 'https://images.pexels.com/photos/16845749/pexels-photo-16845749.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Huzaifa Bukhari / Pexels" },
   'pollo-verdure-wok': { url: 'https://images.pexels.com/photos/35873820/pexels-photo-35873820.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "atelierbyvineeth . . . / Pexels" },
@@ -956,20 +1310,28 @@ export const IDEA_PHOTOS = {
   'polpette-tonno-forno': { url: 'https://images.pexels.com/photos/37859853/pexels-photo-37859853.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Ball CooleR / Pexels" },
   'porridge-mirtilli': { url: 'https://images.pexels.com/photos/12955496/pexels-photo-12955496.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Atlantic Ambience / Pexels" },
   'quinoa-ceci-curry': { url: 'https://images.pexels.com/photos/9287035/pexels-photo-9287035.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Muhammad  Khawar Nazir / Pexels" },
+  'riso-venere-gamberi': { url: 'https://images.pexels.com/photos/13806700/pexels-photo-13806700.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Nadin Sh / Pexels" },
   'risotto-zucca-leggero': { url: 'https://images.pexels.com/photos/33988119/pexels-photo-33988119.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Jana Ohajdova / Pexels" },
   'salmone-asparagi': { url: 'https://images.pexels.com/photos/16845479/pexels-photo-16845479.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Huzaifa Bukhari / Pexels" },
+  'salmone-quinoa-asparagi': { url: 'https://images.pexels.com/photos/4663250/pexels-photo-4663250.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Denys Gromov / Pexels" },
   'seitan-peperoni': { url: 'https://images.pexels.com/photos/10338629/pexels-photo-10338629.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Istvan Szabo / Pexels" },
   'sformato-broccoli': { url: 'https://images.pexels.com/photos/4768954/pexels-photo-4768954.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Denys Gromov / Pexels" },
+  'spiedini-pollo-peperoni': { url: 'https://images.pexels.com/photos/12716039/pexels-photo-12716039.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "BOOM 💥 Photography / Pexels" },
+  'tacchino-funghi': { url: 'https://images.pexels.com/photos/31960616/pexels-photo-31960616.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Zola PALMER / Pexels" },
   'tacchino-insalata': { url: 'https://images.pexels.com/photos/1182511/pexels-photo-1182511.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Jenna Hamra / Pexels" },
+  'tacos-fagioli': { url: 'https://images.pexels.com/photos/9214000/pexels-photo-9214000.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Loren Castillo / Pexels" },
   'tempeh-verdure': { url: 'https://images.pexels.com/photos/37113556/pexels-photo-37113556.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Man Fong Wong / Pexels" },
   'toast-avocado-uovo': { url: 'https://images.pexels.com/photos/793785/pexels-photo-793785.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Jane  T D. / Pexels" },
   'tofu-verdure': { url: 'https://images.pexels.com/photos/9213853/pexels-photo-9213853.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Loren Castillo / Pexels" },
+  'uova-avocado-pomodorini': { url: 'https://images.pexels.com/photos/29893443/pexels-photo-29893443.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Eugenia Sol / Pexels" },
   'uova-pomodoro-shakshuka': { url: 'https://images.pexels.com/photos/29177374/pexels-photo-29177374.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "The Castlebar / Pexels" },
   'vellutata-zucca-zenzero': { url: 'https://images.pexels.com/photos/5662190/pexels-photo-5662190.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "KATRIN  BOLOVTSOVA / Pexels" },
   'verdure-grigliate': { url: 'https://images.pexels.com/photos/5637759/pexels-photo-5637759.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Askar Abayev / Pexels" },
   'yogurt-bowl-proteica': { url: 'https://images.pexels.com/photos/4006347/pexels-photo-4006347.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Jenna Hamra / Pexels" },
+  'yogurt-cacao-banana': { url: 'https://images.pexels.com/photos/6771602/pexels-photo-6771602.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Piotr Arnoldes / Pexels" },
   'zuppa-ceci-rosmarino': { url: 'https://images.pexels.com/photos/33597401/pexels-photo-33597401.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Brad Hines / Pexels" },
-  'zuppa-lenticchie': { url: 'https://images.pexels.com/photos/20004800/pexels-photo-20004800.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Rahul Sonawane / Pexels" }
+  'zuppa-lenticchie': { url: 'https://images.pexels.com/photos/20004800/pexels-photo-20004800.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Rahul Sonawane / Pexels" },
+  'zuppa-orzo-verdure': { url: 'https://images.pexels.com/photos/17312402/pexels-photo-17312402.jpeg?auto=compress&cs=tinysrgb&h=350', credit: "Victor Cayke / Pexels" }
 };
 
 /** Gradiente per momento del pasto: dà un colpo d'occhio alla griglia. */
