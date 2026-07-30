@@ -154,7 +154,7 @@ function portionSheet({ food, slot, entryId = null, grams = null, onSaved = null
 // Scheda ricerca alimento
 // ---------------------------------------------------------------------------
 
-const SOURCE_ICON = { base: '🥬', recipe: '📖', manual: '✏️', off: '🏷️' };
+const SOURCE_ICON = { base: '🥬', recipe: '📖', manual: '✏️', off: '🏷️', plan: '📅' };
 
 function suggestionHTML(food, index, src) {
   const meta =
@@ -178,8 +178,29 @@ function suggestionHTML(food, index, src) {
  * Scheda di ricerca alimento.
  * `onPick(food)` sostituisce il salvataggio nel diario (usato dal piano settimanale).
  */
+/**
+ * Alimenti che il piano settimanale prevede per questo pasto, con le
+ * grammature già impostate. Vuoto se non è stata scelta nessuna dieta.
+ */
+function previstiDallaDieta(slot) {
+  const items = state.plan?.[String(isoWeekday(state.selectedDate))] || [];
+  return items
+    .filter((i) => i.slot === slot && i.per100)
+    .map((i) => ({
+      code: i.code || '',
+      name: i.name,
+      brand: 'Previsto dalla dieta',
+      quantity: `${fmt(num(i.grams))} g`,
+      image: i.image || '',
+      source: 'plan',
+      servingG: num(i.grams) || 100,
+      per100: i.per100
+    }));
+}
+
 export function openFoodPicker(slot, { onPick } = {}) {
   let controller = null;
+  let planShown = [];    // alimenti previsti dalla dieta per questo pasto
   let localShown = [];   // ricette + alimenti base + recenti
   let offShown = [];     // prodotti confezionati da Open Food Facts
   let mode = 'browse';   // browse | barcode | manual
@@ -202,6 +223,8 @@ export function openFoodPicker(slot, { onPick } = {}) {
                    enterkeyhint="search" />
             <span class="search__spin" id="spin" hidden></span>
           </div>
+          <p class="picker__label picker__label--dieta" id="plan-label" hidden>Cosa prevede la dieta</p>
+          <div class="sugglist" id="plan-list"></div>
           <p class="picker__label" id="list-label">Recenti</p>
           <div class="sugglist" id="list"><p class="empty">Caricamento…</p></div>
           <p class="picker__label" id="off-label" hidden>Prodotti confezionati</p>
@@ -273,8 +296,25 @@ export function openFoodPicker(slot, { onPick } = {}) {
         offBox.innerHTML = '';
       };
 
+      const planLabel = panel.querySelector('#plan-label');
+      const planBox = panel.querySelector('#plan-list');
+
+      // La dieta scelta viene per prima: è quello che dovresti mangiare adesso.
+      const paintPlan = () => {
+        planShown = previstiDallaDieta(slot);
+        planLabel.hidden = planShown.length === 0;
+        planBox.innerHTML = planShown.map((f, i) => suggestionHTML(f, i, 'plan')).join('');
+      };
+
+      const clearPlan = () => {
+        planShown = [];
+        planLabel.hidden = true;
+        planBox.innerHTML = '';
+      };
+
       const showDefaults = () => {
         clearOff();
+        paintPlan();
         const items = defaultSuggestions();
         paintLocal(
           items,
@@ -302,6 +342,9 @@ export function openFoodPicker(slot, { onPick } = {}) {
           spin.hidden = true;
           return showDefaults();
         }
+
+        // Cercando si mostrano i risultati, non ciò che la dieta prevede.
+        clearPlan();
 
         // Fase 1 — locale: ricette e alimenti base, subito e senza rete.
         paintLocal(
@@ -335,8 +378,11 @@ export function openFoodPicker(slot, { onPick } = {}) {
       const onListClick = (e) => {
         const btn = e.target.closest('[data-idx]');
         if (!btn) return;
-        pick((btn.dataset.src === 'off' ? offShown : localShown)[Number(btn.dataset.idx)]);
+        const fonte =
+          btn.dataset.src === 'off' ? offShown : btn.dataset.src === 'plan' ? planShown : localShown;
+        pick(fonte[Number(btn.dataset.idx)]);
       };
+      planBox.addEventListener('click', onListClick);
       listBox.addEventListener('click', onListClick);
       offBox.addEventListener('click', onListClick);
 

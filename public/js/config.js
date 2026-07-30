@@ -28,7 +28,7 @@ export const firebaseConfig = {
 
 // Solo queste email possono usare l'app. Lascia vuoto [] per permettere
 // qualsiasi account Google (sconsigliato).
-export const ALLOWED_EMAILS = ['silvio.phy@gmail.com', 'sara.scavo63@gmail.com'];
+export const ALLOWED_EMAILS = ['silvio.phy@gmail.com', 'sara.scavo63@gmail.com', 'chiaraluca.mail@gmail.com'];
 
 // Open Food Facts: paese usato per la ricerca (it = catalogo italiano).
 export const OFF_COUNTRY = 'it';

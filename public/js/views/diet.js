@@ -189,6 +189,13 @@ function dietSheet(diet, apply) {
       <div data-mode="dieta">
         <p class="idea__steps">${esc(diet.description)}</p>
 
+        <p class="dietnota">
+          <b>Come si usa.</b> Applicandola, quando registri un pasto la finestra
+          “Aggiungi alimento” mostrerà in cima <b>Cosa prevede la dieta</b>: gli
+          alimenti previsti per quel pasto, con le grammature già pronte. Basta
+          premerli, senza cercarli.
+        </p>
+
         <div class="chips" style="margin:14px 0">
           ${diet.highlights.map((h) => `<span class="chip chip--static">${esc(h)}</span>`).join('')}
         </div>
@@ -213,23 +220,32 @@ function dietSheet(diet, apply) {
         ${diet.perGiorno
           .map(
             (g) => `
-          <p class="picker__label" style="margin-top:16px">${esc(g.day.label)}</p>
-          <ul class="list list--compact">
-            ${MEAL_SLOTS.map((slot) => {
-              const own = g.items.filter((i) => i.slot === slot.id);
-              if (!own.length) return '';
-              return own
-                .map((i) => {
-                  const m = scaleMacros(i.per100, i.grams);
-                  return `<li class="food"><div class="food__row food__row--static">
-                    <span class="food__name">${slot.icon} ${esc(i.name)}</span>
-                    <span class="food__qty">${fmt(i.grams)} g</span>
-                    <span class="food__kcal">${fmt(m.kcal)}<small> kcal</small></span>
-                  </div></li>`;
-                })
-                .join('');
-            }).join('')}
-          </ul>`
+          <p class="picker__label picker__label--giorno">${esc(g.day.label)}</p>
+          ${MEAL_SLOTS.map((slot) => {
+            const own = g.items.filter((i) => i.slot === slot.id);
+            // Un pasto che la dieta non prevede non compare affatto.
+            if (!own.length) return '';
+            const kcal = own.reduce((a, i) => a + scaleMacros(i.per100, i.grams).kcal, 0);
+            return `
+              <div class="dietpasto">
+                <div class="dietpasto__head">
+                  <span class="dietpasto__nome">${esc(slot.label)}</span>
+                  <span class="dietpasto__kcal">${fmt(kcal)} kcal</span>
+                </div>
+                <ul class="list list--compact">
+                  ${own
+                    .map((i) => {
+                      const m = scaleMacros(i.per100, i.grams);
+                      return `<li class="food"><div class="food__row food__row--static">
+                        <span class="food__name">${esc(i.name)}</span>
+                        <span class="food__qty">${fmt(i.grams)} g</span>
+                        <span class="food__kcal">${fmt(m.kcal)}<small> kcal</small></span>
+                      </div></li>`;
+                    })
+                    .join('')}
+                </ul>
+              </div>`;
+          }).join('')}`
           )
           .join('')}
 
@@ -254,7 +270,8 @@ function dietSheet(diet, apply) {
           text:
             `Il piano settimanale verrà sostituito con ${diet.conteggio} alimenti` +
             (anche ? ' e gli obiettivi giornalieri verranno ricalcolati' : '') +
-            '. I pasti già registrati non vengono toccati.',
+            '. I pasti già registrati non vengono toccati. Da qui in poi, ' +
+            'aggiungendo un pasto troverai in cima gli alimenti previsti dalla dieta.',
           confirmLabel: 'Applica'
         });
         if (!ok) return;
