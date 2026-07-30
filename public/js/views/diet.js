@@ -171,8 +171,57 @@ function dietCardHTML(diet) {
     </button>`;
 }
 
+/**
+ * Un giorno della dieta con lo stesso aspetto del piano settimanale:
+ * un pannello per pasto con dentro i suoi alimenti. Sola lettura, quindi
+ * senza i pulsanti di aggiunta e rimozione.
+ */
+function dietGiornoHTML(diet, dayId) {
+  const g = diet.perGiorno.find((x) => x.day.id === dayId);
+  if (!g || !g.items.length) return '<p class="empty">Nessun pasto previsto per questo giorno.</p>';
+
+  const tot = sumMacros(g.items, (i) => scaleMacros(i.per100, i.grams));
+  const slots = MEAL_SLOTS.map((slot) => {
+    const own = g.items.filter((i) => i.slot === slot.id);
+    // Un pasto che la dieta non prevede non compare affatto.
+    if (!own.length) return '';
+    const kcal = own.reduce((a, i) => a + scaleMacros(i.per100, i.grams).kcal, 0);
+    return `
+      <section class="slot">
+        <div class="slot__head slot__head--statico">
+          <span class="slot__icon" aria-hidden="true">${slot.icon}</span>
+          <span class="slot__name">${esc(slot.label)}</span>
+          <span class="slot__sum">${fmt(kcal)} kcal</span>
+        </div>
+        <ul class="slot__items">
+          ${own
+            .map((i) => {
+              const m = scaleMacros(i.per100, i.grams);
+              return `<li class="food"><div class="food__row food__row--static">
+                <span class="food__name">${esc(i.name)}</span>
+                <span class="food__qty">${fmt(i.grams)} g</span>
+                <span class="food__kcal">${fmt(m.kcal)}<small> kcal</small></span>
+              </div></li>`;
+            })
+            .join('')}
+        </ul>
+      </section>`;
+  }).join('');
+
+  return `
+    <div class="planbar">
+      <div>
+        <span class="planbar__k">${fmt(tot.kcal)} kcal</span>
+        <span class="planbar__d">${g.items.length} alimenti</span>
+      </div>
+      <span class="planbar__m">P ${fmt(tot.protein)} · C ${fmt(tot.carbs)} · G ${fmt(tot.fat)} g</span>
+    </div>
+    <div class="slots">${slots}</div>`;
+}
+
 /** Scheda dieta: descrizione, settimana giorno per giorno, applicazione. */
 function dietSheet(diet, apply) {
+  let giornoAperto = isoWeekday(toISODate());
   openSheet({
     size: 'lg',
     html: `<div class="picker">
@@ -206,48 +255,15 @@ function dietSheet(diet, apply) {
           <span class="preview__m">P ${fmt(diet.media.protein)} · C ${fmt(diet.media.carbs)} · G ${fmt(diet.media.fat)} g</span>
         </div>
 
-        <p class="picker__label" style="margin-top:16px">La settimana</p>
-        <div class="tablewrap">
-          <table><thead><tr><th>Giorno</th><th>Alimenti</th><th>Calorie</th></tr></thead>
-            <tbody>${diet.perGiorno
-              .map(
-                (g) =>
-                  `<tr><td>${esc(g.day.label)}</td><td>${g.items.length}</td><td>${fmt(g.totals.kcal)} kcal</td></tr>`
-              )
-              .join('')}</tbody></table>
+        <p class="picker__label" style="margin-top:18px">La settimana</p>
+        <div class="chips chips--days" id="dieta-giorni">
+          ${WEEKDAYS.map(
+            (d) =>
+              `<button class="chip" type="button" data-giorno="${d.id}"
+                       aria-pressed="${d.id === giornoAperto}">${d.short}</button>`
+          ).join('')}
         </div>
-
-        ${diet.perGiorno
-          .map(
-            (g) => `
-          <p class="picker__label picker__label--giorno">${esc(g.day.label)}</p>
-          ${MEAL_SLOTS.map((slot) => {
-            const own = g.items.filter((i) => i.slot === slot.id);
-            // Un pasto che la dieta non prevede non compare affatto.
-            if (!own.length) return '';
-            const kcal = own.reduce((a, i) => a + scaleMacros(i.per100, i.grams).kcal, 0);
-            return `
-              <div class="dietpasto">
-                <div class="dietpasto__head">
-                  <span class="dietpasto__nome">${esc(slot.label)}</span>
-                  <span class="dietpasto__kcal">${fmt(kcal)} kcal</span>
-                </div>
-                <ul class="list list--compact">
-                  ${own
-                    .map((i) => {
-                      const m = scaleMacros(i.per100, i.grams);
-                      return `<li class="food"><div class="food__row food__row--static">
-                        <span class="food__name">${esc(i.name)}</span>
-                        <span class="food__qty">${fmt(i.grams)} g</span>
-                        <span class="food__kcal">${fmt(m.kcal)}<small> kcal</small></span>
-                      </div></li>`;
-                    })
-                    .join('')}
-                </ul>
-              </div>`;
-          }).join('')}`
-          )
-          .join('')}
+        <div id="dieta-dettaglio">${dietGiornoHTML(diet, giornoAperto)}</div>
 
         ${diet.photo?.credit ? `<p class="idea__credit">Foto: ${esc(diet.photo.credit)}</p>` : ''}
       </div>
@@ -262,6 +278,17 @@ function dietSheet(diet, apply) {
     </div>`,
 
     onMount: (panel, close) => {
+      const dettaglio = panel.querySelector('#dieta-dettaglio');
+      panel.querySelector('#dieta-giorni').addEventListener('click', (e) => {
+        const b = e.target.closest('[data-giorno]');
+        if (!b) return;
+        giornoAperto = Number(b.dataset.giorno);
+        panel
+          .querySelectorAll('[data-giorno]')
+          .forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        dettaglio.innerHTML = dietGiornoHTML(diet, giornoAperto);
+      });
+
       panel.querySelector('#d-apply').addEventListener('click', async () => {
         const anche = panel.querySelector('#d-targets').checked;
         close();

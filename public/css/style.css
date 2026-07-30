@@ -1020,6 +1020,16 @@ textarea {
   background: var(--bg-sunk);
 }
 
+/* Nella scheda della dieta i pannelli sono di sola lettura. */
+.slot__head--statico {
+  grid-template-columns: auto 1fr auto;
+  cursor: default;
+}
+
+.slot__head--statico:active {
+  background: none;
+}
+
 .slot__icon {
   font-size: 20px;
   line-height: 1;
@@ -1350,37 +1360,6 @@ textarea {
   content: '';
   background: var(--accent);
   border-radius: 99px;
-}
-
-.picker__label--giorno {
-  margin: 20px 0 8px;
-  font-size: 13px;
-  color: var(--text-dim);
-}
-
-/* Un pasto dentro la scheda della dieta. */
-.dietpasto {
-  margin-bottom: 10px;
-}
-
-.dietpasto__head {
-  display: flex;
-  gap: 10px;
-  align-items: baseline;
-  justify-content: space-between;
-  padding: 0 2px 5px;
-}
-
-.dietpasto__nome {
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.dietpasto__kcal {
-  font-size: 12px;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  color: var(--kcal);
 }
 
 .dietnota {
