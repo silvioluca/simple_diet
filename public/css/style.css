@@ -591,6 +591,15 @@ textarea {
   margin-top: 14px;
 }
 
+/* Ma non fra le celle di una griglia: lì il margine spingerebbe la card in
+   basso accorciandola, e due card affiancate risulterebbero disallineate.
+   Il selettore ripete `.card` perché deve battere `.card + .card`. */
+.grid > .card + .card,
+.dietgrid > .card + .card,
+.ideagrid > .card + .card {
+  margin-top: 0;
+}
+
 .card__head {
   display: flex;
   gap: 10px;
@@ -978,7 +987,18 @@ textarea {
    giornata. Su schermo largo si limita la riga invece di affiancare. */
 .slots {
   display: grid;
-  gap: 18px;
+  gap: 16px;
+}
+
+/* Ogni pasto è un pannello unico che contiene i suoi alimenti: intestazione
+   e voci stanno dentro lo stesso riquadro, così non si confondono fra loro. */
+.slot {
+  overflow: hidden;
+  background: var(--bg-elev);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
 
 /* Tutta l'intestazione è cliccabile per aggiungere. */
@@ -988,22 +1008,15 @@ textarea {
   grid-template-columns: auto 1fr auto auto;
   align-items: center;
   width: 100%;
-  padding: 12px 14px;
-  margin-bottom: 8px;
+  padding: 13px 14px;
   text-align: left;
-  background: var(--bg-elev);
-  border: 1px solid var(--line);
-  border-left: 4px solid var(--accent);
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow);
-}
-
-.slot__head--tap {
   cursor: pointer;
+  background: none;
+  border: 0;
   -webkit-tap-highlight-color: transparent;
 }
 
-.slot__head--tap:active {
+.slot__head:active {
   background: var(--bg-sunk);
 }
 
@@ -1024,22 +1037,35 @@ textarea {
   color: var(--kcal);
 }
 
+/* Le voci sono dentro il pannello: separate da un filo, non da spazi. */
+.slot__items {
+  display: block;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+  background: var(--bg-sunk);
+}
+
+.slot__items .food + .food {
+  border-top: 1px solid var(--line);
+}
+
 .slot__empty {
   display: block;
   width: 100%;
   margin: 0;
-  padding: 14px;
+  padding: 13px;
   font-size: 13px;
   text-align: center;
   cursor: pointer;
   color: var(--text-faint);
   background: var(--bg-sunk);
-  border: 1px dashed var(--line);
-  border-radius: var(--radius-sm);
+  border: 0;
+  border-top: 1px solid var(--line);
 }
 
 .slot__empty:active {
-  border-color: var(--accent);
   color: var(--accent);
 }
 
@@ -1144,16 +1170,16 @@ textarea {
   padding: 12px 44px 12px 14px;
   font-size: 16px; /* sotto i 16px iOS ingrandisce la pagina al focus */
   background: var(--bg-elev);
-  border: 2px solid var(--line);
+  /* Verde sempre: è il campo su cui si agisce appena la modale si apre. */
+  border: 2px solid var(--accent);
   border-radius: var(--radius-sm);
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: box-shadow 0.15s;
 }
 
-/* Contorno acceso quando ci si scrive: si vede subito dov'è il fuoco. */
+/* Scrivendoci si accende anche l'alone. */
 .search input:focus {
   outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
 }
 
 .search input::placeholder {
@@ -1526,6 +1552,7 @@ textarea {
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   color: var(--text-dim);
+  white-space: nowrap;
 }
 
 .porzione__macro b {

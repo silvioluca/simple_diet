@@ -74,11 +74,12 @@ function portionSheet({ food, slot, entryId = null, grams = null }) {
       const paint = () => {
         const g = num(gramsInput.value);
         const m = scaleMacros(food.per100, g);
+        // Due righe soltanto: calorie sopra, i tre macro tutti sulla seconda.
         preview.innerHTML = `
           <span class="porzione__kcal">${fmt(m.kcal)}<small>kcal</small></span>
-          <span class="porzione__macro"><b>P</b> ${fmt(m.protein, 1)}</span>
-          <span class="porzione__macro"><b>C</b> ${fmt(m.carbs, 1)}</span>
-          <span class="porzione__macro"><b>G</b> ${fmt(m.fat, 1)}</span>`;
+          <span class="porzione__macro">
+            <b>P</b> ${fmt(m.protein, 1)} · <b>C</b> ${fmt(m.carbs, 1)} · <b>G</b> ${fmt(m.fat, 1)}
+          </span>`;
         panel
           .querySelectorAll('#p-quick .chip')
           .forEach((c) => c.setAttribute('aria-pressed', String(num(c.dataset.g) === g)));
@@ -435,11 +436,12 @@ export async function renderMeals(view) {
   const slotsHTML = MEAL_SLOTS.map((slot) => {
     const items = entries.filter((e) => e.slot === slot.id);
     const sum = sumMacros(items);
-    // Tutta l'intestazione è il pulsante di aggiunta: il bersaglio è largo
-    // quanto la riga, non solo il "+".
+    // Un pannello per pasto, con dentro i suoi alimenti: così si vede subito
+    // dove finisce un pasto e comincia il successivo.
+    // Tutta l'intestazione è il pulsante di aggiunta, non solo il "+".
     return `
       <section class="slot">
-        <button class="slot__head slot__head--tap" type="button" data-add="${slot.id}">
+        <button class="slot__head" type="button" data-add="${slot.id}">
           <span class="slot__icon" aria-hidden="true">${slot.icon}</span>
           <span class="slot__name">${slot.label}</span>
           <span class="slot__sum">${items.length ? `${fmt(sum.kcal)} kcal` : ''}</span>
@@ -447,7 +449,7 @@ export async function renderMeals(view) {
         </button>
         ${
           items.length
-            ? `<ul class="list list--compact">${items.map(entryHTML).join('')}</ul>`
+            ? `<ul class="slot__items">${items.map(entryHTML).join('')}</ul>`
             : `<button class="slot__empty" type="button" data-add="${slot.id}">Niente registrato — premi per aggiungere</button>`
         }
       </section>`;

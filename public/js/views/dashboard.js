@@ -144,16 +144,6 @@ export async function renderDashboard(view) {
   const deltaClass = (d) => (d == null || d === 0 ? '' : d > 0 ? 'stat__hint--up' : 'stat__hint--down');
 
   view.innerHTML = `<div id="dash-root">
-    <h2 class="sectiontitle">${esc(formatDateLong(date))}</h2>
-    <div class="grid">
-      <section class="card card--span2">${ringHTML(totals.kcal, targets.kcal)}</section>
-      <section class="card">
-        <div class="card__head"><h2>Macronutrienti</h2></div>
-        ${macroBarsHTML(totals, targets)}
-      </section>
-    </div>
-
-    <h2 class="sectiontitle">In sintesi</h2>
     <div class="grid grid--stats">
       ${statHTML({
         label: 'Assunte oggi',
@@ -185,6 +175,15 @@ export async function renderDashboard(view) {
         hint: `Target: ${fmt(targets.kcal)} kcal/giorno`,
         hintClass: deltaClass(d30)
       })}
+    </div>
+
+    <h2 class="sectiontitle">${esc(formatDateLong(date))}</h2>
+    <div class="grid">
+      <section class="card card--span2">${ringHTML(totals.kcal, targets.kcal)}</section>
+      <section class="card">
+        <div class="card__head"><h2>Macronutrienti</h2></div>
+        ${macroBarsHTML(totals, targets)}
+      </section>
     </div>
 
     <h2 class="sectiontitle">Avvisi</h2>
