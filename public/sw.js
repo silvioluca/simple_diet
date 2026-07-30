@@ -6,7 +6,7 @@
 // il codice cerca elementi che non esistono più. Meglio qualche ms in più.
 //
 // I dati Firestore hanno già la loro persistenza offline nell'SDK.
-const VERSION = 'v15';
+const VERSION = 'v16';
 const SHELL = `simple-diet-shell-${VERSION}`;
 
 // La cartella in cui vive il service worker: '/' su Firebase Hosting,

@@ -47,7 +47,10 @@ if (!KEY) {
 const QUERIES_DIETE = {
   mediterranea: 'mediterranean food table olives',
   vegetariana: 'vegetarian food vegetables table',
-  proteica: 'protein food chicken eggs meal prep'
+  proteica: 'protein food chicken eggs meal prep',
+  vegana: 'vegan food legumes tofu bowl',
+  chetogenica: 'keto food avocado eggs cheese',
+  'low-carb': 'low carb meal meat salad plate'
 };
 
 // Query in inglese: il catalogo Pexels è indicizzato in inglese.

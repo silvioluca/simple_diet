@@ -31,6 +31,13 @@ macronutrienti consigliata:
 | Mediterranea | C 50% · P 20% · G 30% | ~1500 kcal/giorno |
 | Vegetariana | C 50% · P 20% · G 30% | ~1500 kcal/giorno |
 | Proteica | C 35% · P 35% · G 30% | ~1800 kcal/giorno |
+| Vegana | C 50% · P 18% · G 32% | ~1900 kcal/giorno |
+| Chetogenica | C 8% · P 22% · G 70% | ~2000 kcal/giorno |
+| Low carb | C 22% · P 32% · G 46% | ~1750 kcal/giorno |
+
+Le ripartizioni dichiarate sono verificate contro il menù reale: un test calcola i
+macronutrienti effettivi della settimana e segnala gli scostamenti oltre pochi punti,
+perché è la ripartizione dichiarata a generare gli obiettivi quando si applica la dieta.
 
 Come per le idee ricette, **gli alimenti citano i nomi della tabella e le macro non sono
 duplicate**: si calcolano da `foods-base.js`. Applicandone una si sostituisce il piano
