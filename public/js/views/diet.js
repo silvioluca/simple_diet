@@ -389,7 +389,7 @@ export async function renderDiet(view) {
     const addBtn = e.target.closest('[data-plan-add]');
     if (addBtn) {
       const slot = addBtn.dataset.planAdd;
-      return openFoodPicker(slot, { onPick: (food) => askGrams(food, slot), lockSlot: true });
+      return openFoodPicker(slot, { onPick: (food) => askGrams(food, slot) });
     }
 
     const removeBtn = e.target.closest('[data-remove]');

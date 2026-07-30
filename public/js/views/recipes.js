@@ -155,7 +155,6 @@ function recipeEditor(recipe, onSaved) {
           readFields();
           // Il picker sostituisce questa sheet: la riapro dopo la scelta.
           return openFoodPicker('pranzo', {
-            lockSlot: true,
             onPick: (food) => askGrams(food)
           });
         }

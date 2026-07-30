@@ -90,6 +90,30 @@ export function alertHTML({ kind = 'warn', icon = '⚠️', title, text }) {
 let activeSheet = null;
 
 /**
+ * Su iOS la comparsa della tastiera NON riduce l'altezza della finestra: una
+ * modale alta 100dvh resterebbe per metà nascosta dietro la tastiera, ed è
+ * proprio la parte con l'elenco dei risultati. `visualViewport` dà l'altezza
+ * realmente visibile, e la si riporta al pannello.
+ * Ritorna la funzione per smettere di ascoltare.
+ */
+function adattaAllaTastiera(wrap) {
+  const vv = window.visualViewport;
+  if (!vv) return () => {};
+  const applica = () => {
+    wrap.style.setProperty('--vv-h', `${Math.round(vv.height)}px`);
+    // Con la tastiera aperta iOS sposta anche l'origine del viewport visibile.
+    wrap.style.setProperty('--vv-top', `${Math.round(vv.offsetTop)}px`);
+  };
+  applica();
+  vv.addEventListener('resize', applica);
+  vv.addEventListener('scroll', applica);
+  return () => {
+    vv.removeEventListener('resize', applica);
+    vv.removeEventListener('scroll', applica);
+  };
+}
+
+/**
  * Apre un pannello modale. `onMount(panel, close)` riceve il nodo per attaccare
  * gli handler. `size`: 'sm' | 'md' (default) | 'lg'.
  * Ritorna la funzione di chiusura.
@@ -104,8 +128,12 @@ export function openSheet({ html, onMount, onClose, size = 'md' }) {
   panel.innerHTML = html;
   root.appendChild(wrap);
 
+  const smettiAdattare = size === 'lg' ? adattaAllaTastiera(wrap) : () => {};
+  wrap.cleanup = smettiAdattare;
+
   const close = () => {
     if (activeSheet !== wrap) return;
+    smettiAdattare();
     wrap.remove();
     document.removeEventListener('keydown', onKey);
     activeSheet = null;
@@ -127,6 +155,8 @@ export function openSheet({ html, onMount, onClose, size = 'md' }) {
 }
 
 export function closeSheet() {
+  // Anche la chiusura "dall'esterno" deve smettere di ascoltare il viewport.
+  activeSheet?.cleanup?.();
   activeSheet?.remove();
   activeSheet = null;
 }

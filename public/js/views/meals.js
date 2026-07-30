@@ -173,9 +173,8 @@ function suggestionHTML(food, index, src) {
 /**
  * Scheda di ricerca alimento.
  * `onPick(food)` sostituisce il salvataggio nel diario (usato dal piano settimanale).
- * `lockSlot` nasconde il selettore di pasto.
  */
-export function openFoodPicker(slot, { onPick, lockSlot = false } = {}) {
+export function openFoodPicker(slot, { onPick } = {}) {
   let controller = null;
   let localShown = [];   // ricette + alimenti base + recenti
   let offShown = [];     // prodotti confezionati da Open Food Facts
@@ -193,22 +192,9 @@ export function openFoodPicker(slot, { onPick, lockSlot = false } = {}) {
           <button class="iconbtn" data-close type="button" aria-label="Chiudi">✕</button>
         </header>
 
-        ${
-          lockSlot
-            ? ''
-            : `<label class="field picker__slot">
-                 <span>Pasto</span>
-                 <select id="pk-slot">
-                   ${MEAL_SLOTS.map(
-                     (s) => `<option value="${s.id}" ${s.id === slot ? 'selected' : ''}>${s.icon} ${s.label}</option>`
-                   ).join('')}
-                 </select>
-               </label>`
-        }
-
         <div data-mode="browse">
           <div class="search">
-            <input id="q" type="search" placeholder="Mela, petto di pollo, zucchine…" autocomplete="off" enterkeyhint="search" />
+            <input id="q" type="search" placeholder="Scrivi qui il tuo alimento" autocomplete="off" enterkeyhint="search" />
             <span class="search__spin" id="spin" hidden></span>
           </div>
           <p class="picker__label" id="list-label">Recenti</p>
@@ -248,14 +234,13 @@ export function openFoodPicker(slot, { onPick, lockSlot = false } = {}) {
       const spin = panel.querySelector('#spin');
       const queryInput = panel.querySelector('#q');
 
-      const chosenSlot = () => panel.querySelector('#pk-slot')?.value || slot;
-
+      // Il pasto arriva da dove hai premuto (o dall'ora, col pulsante +):
+      // niente selettore qui, si corregge semmai nella scheda della porzione.
       const pick = (food) => {
         if (!food) return;
-        const target = chosenSlot();
         close();
         if (onPick) onPick(food);
-        else portionSheet({ food, slot: target });
+        else portionSheet({ food, slot });
       };
 
       const offLabel = panel.querySelector('#off-label');
@@ -451,18 +436,20 @@ export async function renderMeals(view) {
   const slotsHTML = MEAL_SLOTS.map((slot) => {
     const items = entries.filter((e) => e.slot === slot.id);
     const sum = sumMacros(items);
+    // Tutta l'intestazione è il pulsante di aggiunta: il bersaglio è largo
+    // quanto la riga, non solo il "+".
     return `
       <section class="slot">
-        <div class="slot__head">
-          <span class="slot__name">${slot.icon} ${slot.label}</span>
+        <button class="slot__head slot__head--tap" type="button" data-add="${slot.id}">
+          <span class="slot__icon" aria-hidden="true">${slot.icon}</span>
+          <span class="slot__name">${slot.label}</span>
           <span class="slot__sum">${items.length ? `${fmt(sum.kcal)} kcal` : ''}</span>
-          <button class="addbtn addbtn--sm" type="button" data-add="${slot.id}"
-                  aria-label="Aggiungi a ${esc(slot.label)}">${PLUS_SVG}</button>
-        </div>
+          <span class="addbtn addbtn--sm" aria-hidden="true">${PLUS_SVG}</span>
+        </button>
         ${
           items.length
             ? `<ul class="list list--compact">${items.map(entryHTML).join('')}</ul>`
-            : '<p class="slot__empty">Niente registrato</p>'
+            : `<button class="slot__empty" type="button" data-add="${slot.id}">Niente registrato — premi per aggiungere</button>`
         }
       </section>`;
   }).join('');
