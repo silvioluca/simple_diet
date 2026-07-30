@@ -1355,6 +1355,22 @@ textarea {
   flex: none;
 }
 
+/* Aggiungendo un alimento si resta qui: da questa modale si esce con "Fine". */
+.picker__fine {
+  display: grid;
+  flex: none;
+  place-items: center;
+  padding-top: 12px;
+}
+
+.btn--fine {
+  width: min(320px, 100%);
+  min-height: 52px;
+  font-size: 17px;
+  letter-spacing: 0.01em;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
 .chips {
   display: flex;
   flex-wrap: wrap;

@@ -163,6 +163,41 @@ $('#login-btn').addEventListener('click', async () => {
   }
 });
 
+// ---------- Tastiera ----------
+
+const CAMPI = 'input, textarea, select';
+
+/**
+ * Su iPad la tastiera resta aperta anche toccando fuori dal campo, perché il
+ * fuoco non si sposta da solo. La si chiude togliendo il fuoco.
+ *
+ * Si agisce sul `click`, non sul `pointerdown`: alla chiusura della tastiera
+ * il contenuto si ridispone, e togliendo il fuoco *prima* che il bersaglio sia
+ * stato deciso il tocco finirebbe sull'elemento sbagliato.
+ */
+document.addEventListener(
+  'click',
+  (e) => {
+    const attivo = document.activeElement;
+    if (!attivo || !attivo.matches?.(CAMPI)) return;
+    // Un `label` porta il fuoco al proprio campo: non è un tocco "fuori".
+    if (e.target.closest(`${CAMPI}, label`)) return;
+    attivo.blur();
+  },
+  true
+);
+
+// Anche scorrere un elenco chiude la tastiera: è il gesto con cui si cerca la
+// voce giusta, e a schermo pieno la tastiera copre metà dei risultati.
+document.addEventListener(
+  'touchmove',
+  () => {
+    const attivo = document.activeElement;
+    if (attivo?.matches?.(CAMPI)) attivo.blur();
+  },
+  { passive: true, capture: true }
+);
+
 // ---------- Immagini non raggiungibili ----------
 
 // Una foto che non carica lascerebbe il glifo di immagine spezzata sopra la

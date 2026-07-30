@@ -35,7 +35,8 @@ import { render } from '../router.js';
 // Scheda porzione: da un alimento (per 100 g) all'entry salvata
 // ---------------------------------------------------------------------------
 
-function portionSheet({ food, slot, entryId = null, grams = null }) {
+/** `onSaved` viene chiamato dopo il salvataggio: serve a tornare alla ricerca. */
+function portionSheet({ food, slot, entryId = null, grams = null, onSaved = null }) {
   const start = num(grams, food.servingG || 100);
   const quick = [30, 50, 100, 150, 200, 250];
   if (food.servingG && !quick.includes(food.servingG)) quick.unshift(food.servingG);
@@ -125,7 +126,10 @@ function portionSheet({ food, slot, entryId = null, grams = null }) {
           invalidateLocalIndex(); // i recenti sono cambiati
           close();
           toast(entryId ? 'Pasto aggiornato' : 'Aggiunto al diario', 'ok');
-          render();
+          // Prima si aggiorna il diario dietro, poi si torna alla ricerca:
+          // `render()` chiude le modali aperte, quindi l'ordine conta.
+          await render();
+          onSaved?.();
         } catch (err) {
           toast(`Salvataggio fallito: ${err.message}`, 'error');
         }
@@ -174,7 +178,7 @@ function suggestionHTML(food, index, src) {
  * Scheda di ricerca alimento.
  * `onPick(food)` sostituisce il salvataggio nel diario (usato dal piano settimanale).
  */
-export function openFoodPicker(slot, { onPick } = {}) {
+export function openFoodPicker(slot, { onPick, query = '' } = {}) {
   let controller = null;
   let localShown = [];   // ricette + alimenti base + recenti
   let offShown = [];     // prodotti confezionati da Open Food Facts
@@ -194,7 +198,8 @@ export function openFoodPicker(slot, { onPick } = {}) {
 
         <div data-mode="browse">
           <div class="search">
-            <input id="q" type="search" placeholder="Scrivi qui il tuo alimento" autocomplete="off" enterkeyhint="search" />
+            <input id="q" type="search" placeholder="Scrivi qui il tuo alimento" autocomplete="off"
+                   enterkeyhint="search" value="${esc(query)}" />
             <span class="search__spin" id="spin" hidden></span>
           </div>
           <p class="picker__label" id="list-label">Recenti</p>
@@ -226,6 +231,10 @@ export function openFoodPicker(slot, { onPick } = {}) {
           <button class="chip" type="button" data-mode-btn="barcode" aria-pressed="false">📷 Barcode</button>
           <button class="chip" type="button" data-mode-btn="manual" aria-pressed="false">✏️ Manuale</button>
         </footer>
+
+        <div class="picker__fine">
+          <button class="btn btn--fine" type="button" data-close>✓ Fine</button>
+        </div>
       </div>`,
 
     onMount: (panel, close) => {
@@ -236,11 +245,21 @@ export function openFoodPicker(slot, { onPick } = {}) {
 
       // Il pasto arriva da dove hai premuto (o dall'ora, col pulsante +):
       // niente selettore qui, si corregge semmai nella scheda della porzione.
+      //
+      // Dopo aver aggiunto si torna qui, con la stessa ricerca: si registra
+      // un pasto intero senza riaprire la modale a ogni alimento. Si esce
+      // con "Fine".
       const pick = (food) => {
         if (!food) return;
+        const ultimaRicerca = panel.querySelector('#q').value;
         close();
         if (onPick) onPick(food);
-        else portionSheet({ food, slot });
+        else
+          portionSheet({
+            food,
+            slot,
+            onSaved: () => openFoodPicker(slot, { query: ultimaRicerca })
+          });
       };
 
       const offLabel = panel.querySelector('#off-label');
@@ -271,10 +290,13 @@ export function openFoodPicker(slot, { onPick } = {}) {
       };
 
       // Ricette e alimenti recenti dell'utente, poi i suggerimenti iniziali.
+      // L'`await` fa proseguire il resto di onMount, quindi `runSearch` esiste
+      // già quando serve riprendere una ricerca precedente.
       (async () => {
         try {
           await loadLocalIndex();
-          if (!queryInput.value.trim()) showDefaults();
+          if (queryInput.value.trim()) runSearch(queryInput.value);
+          else showDefaults();
         } catch (err) {
           listBox.innerHTML = `<p class="empty">${esc(err.message)}</p>`;
         }
