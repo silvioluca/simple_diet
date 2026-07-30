@@ -1,7 +1,7 @@
 import { listRecipes, saveRecipe, deleteRecipe, addEntry, rememberFood, state } from '../store.js';
 import { filterIdeas, ideaToFood, coverForRecipe } from '../ideas.js';
 import { MEAL_SLOTS, slotForNow } from '../config.js';
-import { openSheet, confirmSheet, statHTML, PLUS_SVG } from '../ui.js';
+import { openSheet, confirmSheet, PLUS_SVG } from '../ui.js';
 import { openFoodPicker } from './meals.js';
 import { invalidateLocalIndex } from '../foodsearch.js';
 import {
@@ -467,24 +467,8 @@ function mineePanelHTML(recipes) {
 export async function renderRecipes(view) {
   const recipes = await listRecipes();
 
-  const avg = recipes.length
-    ? recipes.reduce((a, r) => a + num(r.totals?.kcal) / Math.max(1, num(r.servings, 1)), 0) /
-      recipes.length
-    : 0;
-
   view.innerHTML = `<div id="recipes-root">
-    <div class="grid grid--stats">
-      ${statHTML({ label: 'Ricette tue', value: fmt(recipes.length), tone: 'grape' })}
-      ${statHTML({ label: 'Media per porzione', value: fmt(avg), unit: 'kcal', tone: 'kcal' })}
-      ${statHTML({
-        label: 'Idee pronte',
-        tone: 'protein',
-        value: fmt(filterIdeas({}).length),
-        hint: 'Cercabili per nome o ingrediente'
-      })}
-    </div>
-
-    <div class="chips" style="margin:22px 0 14px" id="rec-tabs" role="tablist">
+    <div class="chips" style="margin:0 0 14px" id="rec-tabs" role="tablist">
       <button class="chip" type="button" data-panel="idee" aria-pressed="${panelOpen === 'idee'}">💡 Idee</button>
       <button class="chip" type="button" data-panel="mie" aria-pressed="${panelOpen === 'mie'}">📒 Le mie ricette</button>
     </div>

@@ -43,8 +43,16 @@ function portionSheet({ food, slot, entryId = null, grams = null }) {
   openSheet({
     size: 'md',
     html: `
-      <h2>${esc(food.name)}</h2>
-      <p>${esc([food.brand, food.quantity].filter(Boolean).join(' · ') || 'Valori per 100 g')}</p>
+      <header class="porzione__head">
+        <div class="porzione__who">
+          <h2>${esc(food.name)}</h2>
+          <p>${esc([food.brand, food.quantity].filter(Boolean).join(' · ') || 'Valori per 100 g')}</p>
+          <p class="porzione__slot">${MEAL_SLOTS.find((s) => s.id === slot)?.icon || ''} ${esc(
+            MEAL_SLOTS.find((s) => s.id === slot)?.label || ''
+          )}</p>
+        </div>
+        <div class="porzione__valori" id="p-preview"></div>
+      </header>
 
       <label class="field">
         <span>Quantità in grammi</span>
@@ -54,17 +62,6 @@ function portionSheet({ food, slot, entryId = null, grams = null }) {
       <div class="chips" id="p-quick">
         ${quick.map((g) => `<button class="chip" type="button" data-g="${g}">${g} g</button>`).join('')}
       </div>
-
-      <label class="field">
-        <span>Pasto</span>
-        <select id="p-slot">
-          ${MEAL_SLOTS.map(
-            (s) => `<option value="${s.id}" ${s.id === slot ? 'selected' : ''}>${s.icon} ${s.label}</option>`
-          ).join('')}
-        </select>
-      </label>
-
-      <div class="preview" id="p-preview"></div>
 
       <button class="btn" id="p-save" type="button">${entryId ? 'Salva modifiche' : 'Aggiungi al diario'}</button>
       ${entryId ? '<button class="btn btn--danger" id="p-del" type="button">Elimina</button>' : ''}
@@ -78,8 +75,10 @@ function portionSheet({ food, slot, entryId = null, grams = null }) {
         const g = num(gramsInput.value);
         const m = scaleMacros(food.per100, g);
         preview.innerHTML = `
-          <span class="preview__k">${fmt(m.kcal)}<small> kcal</small></span>
-          <span class="preview__m">P ${fmt(m.protein, 1)} · C ${fmt(m.carbs, 1)} · G ${fmt(m.fat, 1)} g</span>`;
+          <span class="porzione__kcal">${fmt(m.kcal)}<small>kcal</small></span>
+          <span class="porzione__macro"><b>P</b> ${fmt(m.protein, 1)}</span>
+          <span class="porzione__macro"><b>C</b> ${fmt(m.carbs, 1)}</span>
+          <span class="porzione__macro"><b>G</b> ${fmt(m.fat, 1)}</span>`;
         panel
           .querySelectorAll('#p-quick .chip')
           .forEach((c) => c.setAttribute('aria-pressed', String(num(c.dataset.g) === g)));
@@ -100,7 +99,7 @@ function portionSheet({ food, slot, entryId = null, grams = null }) {
 
         const payload = {
           date: state.selectedDate,
-          slot: panel.querySelector('#p-slot').value,
+          slot, // arriva da dove hai premuto: niente selettore da compilare
           name: food.name,
           brand: food.brand || '',
           code: food.code || '',

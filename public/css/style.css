@@ -979,7 +979,6 @@ textarea {
 .slots {
   display: grid;
   gap: 18px;
-  max-width: 720px;
 }
 
 /* Tutta l'intestazione è cliccabile per aggiungere. */
@@ -1467,7 +1466,75 @@ textarea {
   color: var(--text-dim);
 }
 
-/* Anteprima macro nella scheda porzione. */
+/* Scheda porzione: nome a sinistra, valori nutrizionali in alto a destra,
+   aggiornati mentre si scrivono i grammi. */
+.porzione__head {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.porzione__who {
+  min-width: 0;
+}
+
+.porzione__who h2 {
+  margin-bottom: 3px;
+  font-size: 19px;
+}
+
+.porzione__who p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.porzione__slot {
+  margin-top: 4px !important;
+  font-weight: 600;
+  color: var(--accent) !important;
+}
+
+.porzione__valori {
+  display: grid;
+  flex: none;
+  gap: 1px;
+  padding: 10px 14px;
+  text-align: right;
+  background: var(--bg-sunk);
+  border-radius: var(--radius-sm);
+}
+
+.porzione__kcal {
+  font-size: 24px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+  color: var(--kcal);
+}
+
+.porzione__kcal small {
+  margin-left: 3px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-faint);
+}
+
+.porzione__macro {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-dim);
+}
+
+.porzione__macro b {
+  margin-right: 3px;
+  font-weight: 700;
+  color: var(--text-faint);
+}
+
+/* Anteprima macro (idee ricette e editor). */
 .preview {
   display: flex;
   gap: 14px;

@@ -329,12 +329,7 @@ export async function renderDiet(view) {
   const suggested = suggestTargets(profile);
 
   view.innerHTML = `
-    <h2 class="sectiontitle">Diete mensili</h2>
-    <p class="sectionlead">Una settimana tipo che si ripete per il mese. Applicandola
-      sostituisci il piano settimanale qui sotto.</p>
-    <div class="dietgrid">${DIETS.map(dietCardHTML).join('')}</div>
-
-    <div class="grid grid--stats section">
+    <div class="grid grid--stats">
       ${statHTML({ label: 'Fabbisogno (TDEE)', value: fmt(tdee(profile)), unit: 'kcal', hint: 'Dal profilo', tone: 'carbs' })}
       ${statHTML({
         label: 'Consigliato',
@@ -351,6 +346,11 @@ export async function renderDiet(view) {
         tone: 'fat'
       })}
     </div>
+
+    <h2 class="sectiontitle">Diete mensili</h2>
+    <p class="sectionlead">Una settimana tipo che si ripete per il mese. Applicandola
+      sostituisci il piano settimanale qui sotto.</p>
+    <div class="dietgrid">${DIETS.map(dietCardHTML).join('')}</div>
 
     <div class="sectionbar">
       <h2 class="sectiontitle">Piano settimanale</h2>
